@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Slide Puzzle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#3B1F4A; --panel:#4C2A5E; --ink:#FFF6E9; --muted:#CDB8D6;
+  --mango:#FFB627; --pink:#FF6F91; --mint:#7BE0AD;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --bg:#FFF1DC; --panel:#FFE2B8; --ink:#3B1F4A; --muted:#7A5A86; }
+}
+:root[data-theme="light"]{ --bg:#FFF1DC; --panel:#FFE2B8; --ink:#3B1F4A; --muted:#7A5A86; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; min-height:100%; background:var(--bg); color:var(--ink);
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  display:flex; justify-content:center;
+}
+main{width:100%; max-width:480px; padding:24px 18px 32px}
+h1{
+  font-size:clamp(2.4rem, 11vw, 3.4rem); line-height:.9; margin:0 0 6px;
+  font-weight:800; letter-spacing:-.03em;
+}
+h1 span{display:inline-block}
+h1 span:nth-child(1){color:var(--pink); transform:rotate(-3deg)}
+h1 span:nth-child(2){color:var(--mango); transform:rotate(2deg) translateY(4px)}
+.sub{color:var(--muted); margin:0 0 20px; font-size:1rem}
+.stats{display:flex; gap:10px; margin-bottom:14px}
+.stat{flex:1; background:var(--panel); border-radius:14px; padding:10px 14px}
+.stat b{display:block; font-size:1.6rem; line-height:1}
+.stat small{color:var(--muted)}
+.board-wrap{position:relative}
+#board{
+  position:relative; width:100%; aspect-ratio:1; background:var(--panel);
+  border-radius:18px; padding:6px; touch-action:manipulation;
+}
+.tile{
+  position:absolute; border:none; padding:0; cursor:pointer;
+  border-radius:8px; background-repeat:no-repeat;
+  transition:left .14s ease, top .14s ease;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.18);
+}
+.tile:focus-visible{outline:3px solid var(--mango); outline-offset:2px; z-index:2}
+.tile .num{
+  position:absolute; left:6px; top:4px; font-weight:800; font-size:.9rem;
+  color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.7); display:none;
+}
+.show-nums .tile .num{display:block}
+#win{
+  position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(59,31,74,.86); border-radius:18px; text-align:center; color:#FFF6E9; padding:20px;
+}
+#win.on{display:flex; animation:pop .35s ease}
+#win h2{font-size:2.6rem; margin:0; color:var(--mango); font-weight:800}
+#win p{margin:8px 0 16px}
+@keyframes pop{from{transform:scale(.9); opacity:0} to{transform:scale(1); opacity:1}}
+.row{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap}
+.seg{display:flex; background:var(--panel); border-radius:999px; padding:4px; flex:1}
+.seg button{flex:1; border:none; background:none; color:var(--ink); font:inherit; font-weight:800; padding:8px 0; border-radius:999px; cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--pink); color:#fff}
+.btn{
+  border:none; font:inherit; font-weight:800; padding:12px 16px; border-radius:14px; cursor:pointer;
+  background:var(--mango); color:#3B1F4A; flex:1;
+}
+.btn.alt{background:var(--panel); color:var(--ink)}
+.btn:focus-visible,.seg button:focus-visible{outline:3px solid var(--mint); outline-offset:2px}
+.peek{margin-top:16px; display:flex; gap:12px; align-items:center; color:var(--muted); font-size:.92rem}
+.peek img{width:64px; height:64px; border-radius:10px; object-fit:cover}
+input[type=file]{display:none}
+@media (prefers-reduced-motion: reduce){ .tile{transition:none} #win.on{animation:none} }
+</style>
+</head>
+<body>
+<main>
+  <h1><span>Slide</span> <span>it!</span></h1>
+  <p class="sub">Tap a tile next to the gap to move it. Rebuild the picture.</p>
+
+  <div class="stats">
+    <div class="stat"><b id="moves">0</b><small>moves</small></div>
+    <div class="stat"><b id="time">0:00</b><small>time</small></div>
+    <div class="stat"><b id="best">–</b><small>best moves</small></div>
+  </div>
+
+  <div class="board-wrap">
+    <div id="board" aria-label="Puzzle board"></div>
+    <div id="win" role="status">
+      <h2>Solved!</h2>
+      <p id="winText"></p>
+      <button class="btn" id="again" style="flex:none">Play again</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="seg" role="group" aria-label="Difficulty">
+      <button data-n="3" aria-pressed="true">Easy 3×3</button>
+      <button data-n="4" aria-pressed="false">Medium 4×4</button>
+      <button data-n="5" aria-pressed="false">Hard 5×5</button>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn" id="shuffle">Shuffle</button>
+    <label class="btn alt" for="file" style="text-align:center">Use my photo</label>
+    <button class="btn alt" id="hint">Numbers: off</button>
+  </div>
+  <input type="file" id="file" accept="image/*">
+
+  <div class="peek"><img id="preview" alt="Finished picture"><span>This is the picture you're rebuilding.</span></div>
+</main>
+
+<script>
+const board=document.getElementById('board');
+let N=3, tiles=[], empty, moves=0, seconds=0, timer=null, playing=false, img='';
+
+function makeDefaultImage(){
+  const c=document.createElement('canvas'); c.width=c.height=600; const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,0,600); g.addColorStop(0,'#FF6F91'); g.addColorStop(.55,'#FFB627'); g.addColorStop(1,'#FFE2B8');
+  x.fillStyle=g; x.fillRect(0,0,600,600);
+  x.fillStyle='#FFF6E9'; x.beginPath(); x.arc(420,190,85,0,Math.PI*2); x.fill();
+  for(let i=0;i<5;i++){ x.fillStyle='rgba(255,246,233,.35)'; x.fillRect(0,150+i*40,600,10); }
+  x.fillStyle='#7BE0AD'; x.beginPath(); x.moveTo(0,420); x.quadraticCurveTo(180,300,360,410); x.quadraticCurveTo(480,470,600,380); x.lineTo(600,600); x.lineTo(0,600); x.fill();
+  x.fillStyle='#3B1F4A'; x.beginPath(); x.moveTo(0,500); x.quadraticCurveTo(250,420,600,520); x.lineTo(600,600); x.lineTo(0,600); x.fill();
+  x.fillStyle='#4C2A5E'; x.fillRect(110,330,26,120); x.beginPath(); x.arc(123,320,55,0,Math.PI*2); x.fill();
+  x.fillStyle='#3B1F4A'; x.font='800 64px "Bricolage Grotesque", sans-serif'; x.fillText('★',60,110);
+  return c.toDataURL('image/jpeg',.9);
+}
+
+function cropSquare(src,cb){
+  const im=new Image(); im.onload=()=>{
+    const s=Math.min(im.width,im.height), c=document.createElement('canvas'); c.width=c.height=800;
+    c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,800,800);
+    cb(c.toDataURL('image/jpeg',.9));
+  }; im.src=src;
+}
+
+function bestKey(){return 'slide-best-'+N}
+function showBest(){ let b=null; try{b=localStorage.getItem(bestKey())}catch(e){} document.getElementById('best').textContent=b||'–'; }
+
+function build(){
+  board.innerHTML=''; tiles=[];
+  for(let i=0;i<N*N-1;i++){
+    const t=document.createElement('button'); t.className='tile';
+    t.innerHTML='<span class="num">'+(i+1)+'</span>';
+    t.style.backgroundImage='url('+img+')';
+    t.addEventListener('pointerdown',e=>{e.preventDefault(); tryMove(i);});
+    t.addEventListener('click',e=>{ if(e.detail===0) tryMove(i); });
+    board.appendChild(t); tiles.push({el:t, home:i, pos:i});
+  }
+  empty=N*N-1; layout(); showBest();
+}
+
+function layout(){
+  const pad=6, gap=4, size=(board.clientWidth-pad*2-gap*(N-1))/N;
+  tiles.forEach(t=>{
+    const r=Math.floor(t.pos/N), c=t.pos%N, hr=Math.floor(t.home/N), hc=t.home%N;
+    Object.assign(t.el.style,{
+      width:size+'px', height:size+'px',
+      left:(pad+c*(size+gap))+'px', top:(pad+r*(size+gap))+'px',
+      backgroundSize:(N*size)+'px '+(N*size)+'px',
+      backgroundPosition:(-hc*size)+'px '+(-hr*size)+'px'
+    });
+    t.el.setAttribute('aria-label','Tile '+(t.home+1));
+  });
+}
+
+function adjacent(a,b){ const ar=Math.floor(a/N), ac=a%N, br=Math.floor(b/N), bc=b%N; return Math.abs(ar-br)+Math.abs(ac-bc)===1; }
+
+function tryMove(i){
+  const t=tiles[i]; if(!playing || !adjacent(t.pos,empty)) return;
+  [t.pos,empty]=[empty,t.pos]; layout();
+  moves++; document.getElementById('moves').textContent=moves;
+  if(!timer) timer=setInterval(tick,1000);
+  if(tiles.every(t=>t.pos===t.home)) win();
+}
+
+function tick(){ seconds++; document.getElementById('time').textContent=Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0'); }
+
+function shuffle(){
+  tiles.forEach(t=>t.pos=t.home); empty=N*N-1; let prev=-1;
+  for(let k=0;k<N*N*40;k++){
+    const opts=tiles.filter(t=>adjacent(t.pos,empty) && t.pos!==prev);
+    const t=opts[Math.floor(Math.random()*opts.length)];
+    prev=empty; [t.pos,empty]=[empty,t.pos];
+  }
+  if(tiles.every(t=>t.pos===t.home)) return shuffle();
+  clearInterval(timer); timer=null; moves=0; seconds=0; playing=true;
+  document.getElementById('moves').textContent='0'; document.getElementById('time').textContent='0:00';
+  document.getElementById('win').classList.remove('on'); layout();
+}
+
+function win(){
+  playing=false; clearInterval(timer); timer=null;
+  let b=null; try{b=+localStorage.getItem(bestKey())||null}catch(e){}
+  const record=!b||moves<b;
+  if(record){ try{localStorage.setItem(bestKey(),moves)}catch(e){} }
+  showBest();
+  document.getElementById('winText').textContent=moves+' moves in '+document.getElementById('time').textContent+(record?'. New best!':'.');
+  document.getElementById('win').classList.add('on');
+}
+
+function setImage(src){ img=src; document.getElementById('preview').src=src; build(); shuffle(); }
+
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true'); N=+b.dataset.n; build(); shuffle();
+}));
+document.getElementById('shuffle').onclick=shuffle;
+document.getElementById('again').onclick=shuffle;
+document.getElementById('hint').onclick=e=>{
+  const on=board.classList.toggle('show-nums'); e.target.textContent='Numbers: '+(on?'on':'off');
+};
+document.getElementById('file').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>cropSquare(r.result,setImage); r.readAsDataURL(f);
+};
+window.addEventListener('resize',layout);
+setImage(makeDefaultImage());
+</script>
+</body>
+</html>
