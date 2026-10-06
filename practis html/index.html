@@ -720,6 +720,8 @@
 
     .bk input[type="text"],
     .bk input[type="tel"],
+    .bk input[type="email"],
+    .bk input[type="url"],
     .bk input[type="time"],
     .bk input[type="number"],
     .bk select,
@@ -889,6 +891,20 @@
         color: var(--ink);
         text-decoration: underline;
         cursor: pointer;
+    }
+
+    .pay-amount {
+        font-family: var(--display);
+        font-size: 56px;
+        line-height: 1;
+        margin: 10px 0 0;
+    }
+
+    .pay-steps {
+        text-align: left;
+        font-size: 14px;
+        margin: 14px 0;
+        padding-left: 20px;
     }
 
     /* ===== CONTACT ===== */
@@ -1120,7 +1136,7 @@
 
         <hr class="dash">
         <div class="barcode"></div>
-        <div class="small center menu-foot">THANK YOU, COME AGAIN</div>
+        <div class="small center menu-foot">THANK YOU FOR CHOOSING KLX</div>
     </nav>
 
     <!-- ===== MAIN RECEIPT ===== -->
@@ -1154,67 +1170,19 @@
             <hr class="dash">
 
             <div class="gallery">
-                <figure>
-                    <a href="photos/1 new life colored.jpg" target="_blank">
-                        <img src="photos/1 new life colored.jpg" alt="KLX photo 1 in color">
-                    </a>
-                    <figcaption>ITEM 01 / COLORED</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/1 new life black & white.jpg" target="_blank">
-                        <img src="photos/1 new life black & white.jpg" alt="KLX photo 1 in black and white">
-                    </a>
-                    <figcaption>ITEM 02 / BLACK &amp; WHITE</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/2 new life colored.jpg" target="_blank">
-                        <img src="photos/2 new life colored.jpg" alt="KLX photo 2 in color">
-                    </a>
-                    <figcaption>ITEM 03 / COLORED</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/2 new life black & white.jpg" target="_blank">
-                        <img src="photos/2 new life black & white.jpg" alt="KLX photo 2 in black and white">
-                    </a>
-                    <figcaption>ITEM 04 / BLACK &amp; WHITE</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/3 newlife colored.jpg" target="_blank">
-                        <img src="photos/3 newlife colored.jpg" alt="KLX photo 3 in color">
-                    </a>
-                    <figcaption>ITEM 05 / COLORED</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/3 newlife bllack & white.jpg" target="_blank">
-                        <img src="photos/3 newlife bllack & white.jpg" alt="KLX photo 3 in black and white">
-                    </a>
-                    <figcaption>ITEM 06 / BLACK &amp; WHITE</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/fluke 1 colored.jpg" target="_blank">
-                        <img src="photos/fluke 1 colored.jpg" alt="KLX fluke photo 1 in color">
-                    </a>
-                    <figcaption>ITEM 07 / COLORED</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/fluke 1 black & white.jpg" target="_blank">
-                        <img src="photos/fluke 1 black & white.jpg" alt="KLX fluke photo 1 in black and white">
-                    </a>
-                    <figcaption>ITEM 08 / BLACK &amp; WHITE</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/fluke 2 colored.jpg" target="_blank">
-                        <img src="photos/fluke 2 colored.jpg" alt="KLX fluke photo 2 in color">
-                    </a>
-                    <figcaption>ITEM 09 / COLORED</figcaption>
-                </figure>
-                <figure>
-                    <a href="photos/fluke 2 black & white.jpg" target="_blank">
-                        <img src="photos/fluke 2 black & white.jpg" alt="KLX fluke photo 2 in black and white">
-                    </a>
-                    <figcaption>ITEM 10 / BLACK &amp; WHITE</figcaption>
-                </figure>
-            </div>
+    <figure>
+        <a href="photos/sample colored.jpg" target="_blank">
+            <img src="photos/sample colored.jpg" alt="KLX sample photo in color">
+        </a>
+        <figcaption>ITEM 01 / COLORED</figcaption>
+    </figure>
+    <figure>
+        <a href="photos/sample black and white.jpg" target="_blank">
+            <img src="photos/sample black and white.jpg" alt="KLX sample photo in black and white">
+        </a>
+        <figcaption>ITEM 02 / BLACK &amp; WHITE</figcaption>
+    </figure>
+</div>
 
             <hr class="dash">
             <h2 class="center">Sample Set Up</h2>
@@ -1438,9 +1406,12 @@
                 <h2 class="center">Booking Form</h2>
                 <p class="small center">FILL THIS OUT AND WE'LL CONFIRM YOUR SLOT</p>
 
-                <form name="klx-booking" id="bkForm" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-                    <input type="hidden" name="form-name" value="klx-booking">
-                    <p hidden><label>Leave this empty: <input name="bot-field"></label></p>
+                <form id="bkForm" novalidate>
+                    <!-- PASTE YOUR WEB3FORMS ACCESS KEY BELOW (keep the quotes) -->
+                    <input type="hidden" name="access_key" value="PASTE_YOUR_WEB3FORMS_KEY_HERE">
+                    <input type="hidden" name="subject" id="bkSubject" value="New KLX booking request">
+                    <input type="hidden" name="from_name" value="KLX Website Booking">
+                    <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
                     <input type="hidden" name="booking-number" id="bkRefField">
                     <input type="hidden" name="event-date" id="bkDateField">
                     <input type="hidden" name="total" id="bkTotalField">
@@ -1463,6 +1434,12 @@
                             <label for="bkFb">Facebook name (optional)</label>
                             <input type="text" id="bkFb" name="facebook">
                         </div>
+                    </div>
+
+                    <div class="bk-field">
+                        <label for="bkEmail">Gmail / email address</label>
+                        <input type="email" id="bkEmail" name="email" autocomplete="email" placeholder="yourname@gmail.com" required>
+                        <p class="bk-hint">We'll send your official booking confirmation here.</p>
                     </div>
 
                     <div class="bk-two">
@@ -1521,16 +1498,22 @@
                         </label>
                     </fieldset>
 
-                    <div class="bk-field">
-                        <label for="bkLayout">Preferred layout</label>
-                        <select id="bkLayout" name="layout">
-                            <option>Help me choose</option>
-                            <option>Layout 1</option>
-                            <option>Layout 2</option>
-                            <option>Layout 3</option>
-                            <option>Layout 4</option>
-                        </select>
-                    </div>
+                    <fieldset class="bk-set">
+                        <legend class="bk-legend">Tell us your theme</legend>
+                        <div class="bk-field">
+                            <label for="bkTheme">Theme / motif</label>
+                            <input type="text" id="bkTheme" name="theme" placeholder="e.g. Pastel garden, Barbie pink, Rustic boho">
+                        </div>
+                        <div class="bk-field">
+                            <label for="bkCelebrant">Celebrant's name for the layout</label>
+                            <input type="text" id="bkCelebrant" name="celebrant" placeholder="e.g. Ella's 18th, Mark &amp; Joy">
+                        </div>
+                        <div class="bk-field">
+                            <label for="bkPhoto">Photo link (optional)</label>
+                            <input type="url" id="bkPhoto" name="photo-link" placeholder="Google Drive or Facebook photo link">
+                            <p class="bk-hint">Got photos of the celebrant or your theme inspo? Paste a link here, or send them to us on Messenger with your booking number after you book. We'll use them to design your custom layout.</p>
+                        </div>
+                    </fieldset>
 
                     <fieldset class="bk-set">
                         <legend class="bk-legend">Add-ons</legend>
@@ -1580,9 +1563,16 @@
 
                 <hr class="dash">
                 <h2>Pay your DP</h2>
-                <p>Scan this QR code to pay your 50% downpayment.</p>
-                <img src="payment/qr.jpeg" alt="KLX payment QR code" class="bk-qr" onerror="var p=['payment/qr.jpeg.jpeg','payment/qr.jpg','payment/qr.jpeg.jpg','for payment/qr.jpeg','for payment/qr.jpeg.jpeg'];var i=+(this.dataset.i||0);if(i<p.length){this.dataset.i=i+1;this.src=p[i];}else{this.onerror=null;}">
-                <p>Then send us a screenshot of your payment together with your booking number. We'll confirm your slot right away!</p>
+                <p>Send exactly this amount:</p>
+                <div class="pay-amount" id="bkPayAmount"></div>
+                <button type="button" class="link-btn" id="bkCopyAmount" style="margin-top: 6px;">Copy amount</button>
+                <ol class="pay-steps">
+                    <li>Scan the QR below with your bank or e-wallet app.</li>
+                    <li>Type in the exact amount above.</li>
+                    <li>Put your booking number in the notes or message, if your app allows it.</li>
+                </ol>
+                <img src="payment/qr.jpeg" alt="KLX payment QR code" class="bk-qr" onerror="var p=['payment/qr.jpeg.jpeg','payment/qr.jpg','payment/qr.jpeg.jpg','for payment/qr.jpeg'];var i=+(this.dataset.i||0);if(i<p.length){this.dataset.i=i+1;this.src=p[i];}else{this.onerror=null;}">
+                <p>Then send us a screenshot of your payment with your booking number (plus your theme photos!). Once we verify your payment, we'll email your official booking confirmation to <b id="bkDoneEmail"></b>.</p>
 
                 <div class="pick-actions">
                     <a class="pz-btn dark" href="https://m.me/KLXreceiptPhotobooth" target="_blank">Messenger</a>
@@ -1672,7 +1662,7 @@
         <!-- RECEIPT FOOTER -->
         <hr class="dash">
         <div class="barcode"></div>
-        <p class="small center">*** THANK YOU, COME AGAIN ***<br>KLX RECEIPT PHOTOBOOTH / ILIGAN CITY</p>
+        <p class="small center">*** THANK YOU FOR CHOOSING KLX ***<br>KLX RECEIPT PHOTOBOOTH / ILIGAN CITY</p>
 
     </main>
 
@@ -1956,6 +1946,7 @@
     var bkForm = document.getElementById("bkForm");
     var bkDateKey = null;
     var bkDateLabel = "";
+    var bkLastDp = 0;
 
     function peso(n) {
         return "\u20B1" + n.toLocaleString("en-US");
@@ -2015,6 +2006,7 @@
         }
 
         var dp = Math.ceil(total / 2);
+        bkLastDp = dp;
         document.getElementById("bkLines").innerHTML = html;
         document.getElementById("bkTotal").textContent = peso(total) + (outside ? " + transport" : "");
         document.getElementById("bkDp").textContent = peso(dp);
@@ -2069,6 +2061,7 @@
         var required = [
             ["bkName", "your full name"],
             ["bkPhone", "your mobile number"],
+            ["bkEmail", "your Gmail or email address"],
             ["bkType", "the event type"],
             ["bkTime", "the start time"],
             ["bkVenue", "the venue"]
@@ -2080,6 +2073,11 @@
                 el.focus();
                 return;
             }
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById("bkEmail").value.trim())) {
+            err.textContent = "Please check your email address.";
+            document.getElementById("bkEmail").focus();
+            return;
         }
         if (document.getElementById("bkPhone").value.replace(/\D/g, "").length < 10) {
             err.textContent = "Please check your mobile number.";
@@ -2095,18 +2093,21 @@
         btn.disabled = true;
         btn.textContent = "Sending...";
 
-        // the form only sends for real on your Netlify site; anywhere else is test mode
-        var isLocal = !/netlify\.app$/.test(location.hostname);
-        var send = isLocal
-            ? Promise.resolve({ ok: true })
-            : fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(new FormData(bkForm)).toString()
-            });
+        document.getElementById("bkSubject").value = "New KLX booking " + ref + " (" + bkDateLabel + ")";
 
-        send.then(function (res) {
-            if (!res.ok) throw new Error("Status " + res.status);
+        // test mode on your computer, or until the Web3Forms key is added
+        var keyField = bkForm.querySelector('input[name="access_key"]');
+        var isLocal = location.protocol === "file:" || location.hostname === "" || location.hostname === "127.0.0.1" || location.hostname === "localhost" || /^(192\.168\.|10\.)/.test(location.hostname) || keyField.value.indexOf("PASTE") === 0;
+        var send = isLocal
+            ? Promise.resolve({ success: true })
+            : fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: { "Accept": "application/json" },
+                body: new FormData(bkForm)
+            }).then(function (res) { return res.json(); });
+
+        send.then(function (data) {
+            if (!data || !data.success) throw new Error((data && data.message) || "Send failed");
             bkShowDone(ref, isLocal);
         })
         .catch(function () {
@@ -2123,12 +2124,14 @@
         document.getElementById("bkDoneDate").textContent = document.getElementById("bkDateShow").textContent;
         document.getElementById("bkDoneTotal").textContent = document.getElementById("bkTotal").textContent;
         document.getElementById("bkDoneDp").textContent = document.getElementById("bkDp").textContent;
+        document.getElementById("bkPayAmount").textContent = document.getElementById("bkDp").textContent;
+        document.getElementById("bkDoneEmail").textContent = document.getElementById("bkEmail").value.trim();
 
         var msg = "Hi KLX! Here's my DP for booking " + ref + " on " + bkDateLabel + ".";
         document.getElementById("bkDoneText").href = "sms:09472257991?&body=" + encodeURIComponent(msg);
 
         document.getElementById("bkTestNote").textContent = isLocal
-            ? "TEST MODE: this request was not sent because you're on your computer. It will send for real on your Netlify site."
+            ? "TEST MODE: this booking was not sent (you're on your computer, or the Web3Forms key isn't added yet)."
             : "";
 
         document.getElementById("bkWrap").hidden = true;
@@ -2141,6 +2144,23 @@
         bkDateKey = null;
         drawCalendar();
     }
+
+    document.getElementById("bkCopyAmount").onclick = function () {
+        var btn = this, text = String(bkLastDp);
+        function done() {
+            btn.textContent = "Copied!";
+            setTimeout(function () { btn.textContent = "Copy amount"; }, 1500);
+        }
+        function fallback() {
+            var t = document.createElement("textarea");
+            t.value = text;
+            document.body.appendChild(t);
+            t.select();
+            try { document.execCommand("copy"); done(); } catch (e) {}
+            document.body.removeChild(t);
+        }
+        if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, fallback); } else { fallback(); }
+    };
 
     document.getElementById("bkAgain").onclick = function () {
         document.getElementById("bkDone").hidden = true;
