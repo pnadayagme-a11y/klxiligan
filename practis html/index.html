@@ -1,9 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KLX Receipt Photobooth</title>
+    <title>KLX Receipt Photobooth | Iligan City</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="KLX Receipt Photobooth in Iligan City. Photos printed like receipts for birthdays, debuts, weddings and more. Check our rates and book your date online.">
+
+    <!-- LINK PREVIEW (how your site looks when shared on Facebook / Messenger) -->
+    <!-- EDIT the two links below if your website address changes -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="KLX Receipt Photobooth | Iligan City">
+    <meta property="og:description" content="Photos printed like receipts, a memory you can hold. Check our rates and book your date online.">
+    <meta property="og:image" content="https://klxiligan.vercel.app/KLX%20BUSINESS%20CARD.jpg">
+    <meta property="og:url" content="https://klxiligan.vercel.app/">
+
+    <!-- BROWSER TAB ICON -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='24' font-weight='bold' fill='%23fff' text-anchor='middle'%3EKLX%3C/text%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 
     <style>
@@ -543,7 +555,7 @@
 
     .cal-title {
         font-family: var(--display);
-        font-size: 36px;
+        font-size: 28px;
         line-height: 1;
         text-transform: uppercase;
     }
@@ -853,7 +865,7 @@
 
     .bk-submit:disabled {
         opacity: 0.5;
-        cursor: wait;
+        cursor: not-allowed;
     }
 
     .bk-done {
@@ -1077,6 +1089,283 @@
         .pz-tile { transition: none; }
     }
 
+    /* ===== PROOF OF PAYMENT UPLOAD ===== */
+    .proof,
+    .proof-ok {
+        padding: 16px;
+        margin: 18px 0;
+    }
+
+    .proof {
+        border: 2px dashed var(--ink);
+    }
+
+    .proof-ok {
+        border: 2px solid var(--ink);
+    }
+
+    .proof[hidden],
+    .proof-ok[hidden],
+    .proof-preview[hidden] {
+        display: none;
+    }
+
+    .proof-pick {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 6px 22px;
+    }
+
+    .proof-preview {
+        display: block;
+        max-width: 200px;
+        max-height: 260px;
+        margin: 12px auto 0;
+        border: 1px solid var(--ink);
+    }
+
+    /* ===== PROMO COUNTDOWN STRIP ===== */
+    .promo-strip {
+        background-color: var(--ink);
+        color: var(--paper);
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 1px;
+        padding: 8px 10px;
+        margin: -6px 0 18px;
+    }
+
+    .promo-strip[hidden] {
+        display: none;
+    }
+
+    .promo-strip b {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: 22px;
+        letter-spacing: 2px;
+        margin: 0 4px;
+    }
+
+    .promo-strip button {
+        background: none;
+        border: 0;
+        color: var(--paper);
+        font-family: var(--body);
+        font-size: 12px;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    /* ===== FLOATING BOOK BUTTON ===== */
+    .float-book {
+        position: fixed;
+        right: 18px;
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+        z-index: 50;
+        font-family: var(--display);
+        font-size: 24px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background-color: var(--ink);
+        color: var(--paper);
+        border: 2px solid var(--paper);
+        outline: 2px solid var(--ink);
+        padding: 8px 18px;
+        cursor: pointer;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .float-book[hidden] {
+        display: none;
+    }
+
+    .float-book:hover {
+        opacity: 0.85;
+    }
+
+    /* ===== THEME GALLERY ===== */
+    .theme-btn {
+        display: block;
+        width: 100%;
+        margin-top: 6px;
+        font-size: 18px;
+    }
+
+    /* ===== REVIEWS ===== */
+    .reviews {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 22px;
+    }
+
+    .review {
+        border: 2px dashed var(--ink);
+        padding: 16px;
+    }
+
+    .review-stars {
+        text-align: center;
+        font-size: 18px;
+        letter-spacing: 4px;
+        margin: 4px 0;
+    }
+
+    .review-text {
+        font-size: 14px;
+        margin: 10px 0;
+    }
+
+    .review .line {
+        font-size: 12px;
+    }
+
+    /* ===== FAQ ===== */
+    .faq {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .faq details {
+        border-top: 1px dashed var(--faded);
+        padding: 10px 0;
+    }
+
+    .faq details:first-child {
+        border-top: 0;
+    }
+
+    .faq summary {
+        display: flex;
+        gap: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        list-style: none;
+    }
+
+    .faq summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq summary::before {
+        content: "+";
+        font-family: var(--display);
+        font-size: 24px;
+        line-height: 1;
+        width: 14px;
+        flex-shrink: 0;
+    }
+
+    .faq details[open] summary::before {
+        content: "-";
+    }
+
+    .faq details p {
+        margin: 8px 0 0 24px;
+        font-size: 14px;
+    }
+
+    .book-note a {
+        color: var(--ink);
+    }
+
+    /* ===== MY PHOTOS (EVENT FINDER) ===== */
+    .finder {
+        max-width: 460px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .finder-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .finder-row input {
+        flex: 1;
+        min-width: 0;
+        font-family: var(--body);
+        font-size: 18px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-align: center;
+        border: 2px dashed var(--ink);
+        border-radius: 0;
+        padding: 8px;
+    }
+
+    .finder-msg {
+        color: #b00020;
+        font-size: 13px;
+        min-height: 1.2em;
+        margin: 10px 0 0;
+    }
+
+    .finder-result {
+        border: 2px solid var(--ink);
+        padding: 18px 16px;
+        margin-top: 14px;
+    }
+
+    .finder-result[hidden] {
+        display: none;
+    }
+
+    .finder-result .pz-btn {
+        display: block;
+        text-decoration: none;
+        margin-top: 12px;
+    }
+
+    /* ===== GIFT CARDS ===== */
+    .gift-card {
+        max-width: 420px;
+        margin: 0 auto 26px;
+        padding: 22px 20px;
+        border: 4px double var(--ink);
+        text-align: center;
+    }
+
+    .gift-card .small {
+        margin: 4px 0;
+    }
+
+    .gift-to {
+        font-family: var(--display);
+        font-size: 36px;
+        line-height: 1;
+        text-transform: uppercase;
+        overflow-wrap: anywhere;
+    }
+
+    .gift-pkg {
+        font-family: var(--display);
+        font-size: 44px;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .gift-msg {
+        font-size: 14px;
+        font-style: italic;
+        margin: 12px 0 4px;
+    }
+
+    .gift-msg:empty {
+        display: none;
+    }
+
+    /* ===== RECEIPT MAKER ===== */
+    #rmCanvas {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        margin: 16px auto 4px;
+        border: 1px solid var(--ink);
+    }
+
     /* ===== PHONES ===== */
     @media (max-width: 760px) {
         .layout {
@@ -1103,12 +1392,15 @@
         }
         h1 { font-size: 44px; }
         .cal-cell { font-size: 12px; }
+        .cal-title { font-size: 24px; }
         .promo-title { font-size: 38px; }
         .rate-cards { grid-template-columns: 1fr; gap: 30px; }
         .rate-price { font-size: 56px; }
         .step { grid-template-columns: 48px 1fr; }
         .step-num { font-size: 48px; }
         .bk-two { grid-template-columns: 1fr; }
+        .float-book { font-size: 20px; padding: 6px 14px; right: 12px; }
+        .gift-pkg { font-size: 36px; }
     }
     </style>
 </head>
@@ -1130,8 +1422,12 @@
             <button onclick="showPage('videos', this)"><span class="num">04</span><span class="label">Videos</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('rates', this)"><span class="num">05</span><span class="label">Rates</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('availability', this)" id="navAvailability"><span class="num">06</span><span class="label">Book Now</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('contact', this)"><span class="num">07</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('games', this)"><span class="num">08</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('reviews', this)"><span class="num">07</span><span class="label">Reviews</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('faq', this)"><span class="num">08</span><span class="label">FAQ</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('myphotos', this)"><span class="num">09</span><span class="label">My Photos</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('gifts', this)"><span class="num">10</span><span class="label">Gift Cards</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('contact', this)"><span class="num">11</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('games', this)"><span class="num">12</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
         </div>
 
         <hr class="dash">
@@ -1144,6 +1440,12 @@
 
         <img src="KLX BUSINESS CARD.jpg" alt="KLX Receipt Photobooth logo" class="logo">
         <hr class="dash">
+
+        <!-- PROMO COUNTDOWN (edit the end date in the script: search PROMO_END) -->
+        <div class="promo-strip" id="promoStrip" hidden>
+            <span id="promoName">PROMO</span> ENDS IN <b id="promoTime"></b>
+            <button type="button" onclick="goToBooking()">Book now</button>
+        </div>
 
         <!-- HOME -->
         <section id="home" class="page show">
@@ -1161,6 +1463,13 @@
                 <div class="line"><span>MEMORIES</span><span class="leader"></span><span>UNLIMITED</span></div>
                 <div class="line total"><span>TOTAL</span><span class="leader"></span><span>SMILES</span></div>
             </div>
+
+            <!-- KLX SO FAR (edit the numbers in the script: search STATS) -->
+            <div id="statsWrap" hidden>
+                <hr class="dash">
+                <h2 class="center">KLX So Far</h2>
+                <div class="home-lines" id="statsLines"></div>
+            </div>
         </section>
 
         <!-- PHOTOS -->
@@ -1170,19 +1479,19 @@
             <hr class="dash">
 
             <div class="gallery">
-    <figure>
-        <a href="photos/sample colored.jpg" target="_blank">
-            <img src="photos/sample colored.jpg" alt="KLX sample photo in color">
-        </a>
-        <figcaption>ITEM 01 / COLORED</figcaption>
-    </figure>
-    <figure>
-        <a href="photos/sample black and white.jpg" target="_blank">
-            <img src="photos/sample black and white.jpg" alt="KLX sample photo in black and white">
-        </a>
-        <figcaption>ITEM 02 / BLACK &amp; WHITE</figcaption>
-    </figure>
-</div>
+                <figure>
+                    <a href="photos/sample colored.jpg" target="_blank">
+                        <img src="photos/sample colored.jpg" alt="KLX sample print in color">
+                    </a>
+                    <figcaption>ITEM 01 / COLORED</figcaption>
+                </figure>
+                <figure>
+                    <a href="photos/sample black and white.jpg" target="_blank">
+                        <img src="photos/sample black and white.jpg" alt="KLX sample print in black and white">
+                    </a>
+                    <figcaption>ITEM 02 / BLACK &amp; WHITE</figcaption>
+                </figure>
+            </div>
 
             <hr class="dash">
             <h2 class="center">Sample Set Up</h2>
@@ -1201,6 +1510,13 @@
                     <figcaption>SET UP 02</figcaption>
                 </figure>
             </div>
+
+            <hr class="dash">
+            <h2 class="center">Theme &amp; Layout Gallery</h2>
+            <p class="small center">LIKE A THEME? TAP IT TO BOOK WITH IT</p>
+            <!-- add your layout pictures in the script: search THEMES -->
+            <div class="gallery" id="themeGallery"></div>
+            <p class="soon" id="themeSoon">MORE LAYOUTS COMING SOON</p>
         </section>
 
         <!-- HOW TO USE -->
@@ -1408,7 +1724,7 @@
 
                 <form id="bkForm" novalidate>
                     <!-- PASTE YOUR WEB3FORMS ACCESS KEY BELOW (keep the quotes) -->
-                    <input type="hidden" name="access_key" value="PASTE_YOUR_WEB3FORMS_KEY_HERE">
+                    <input type="hidden" name="access_key" value="8818ea08-dbb9-47fb-b44d-6612085c03aa">
                     <input type="hidden" name="subject" id="bkSubject" value="New KLX booking request">
                     <input type="hidden" name="from_name" value="KLX Website Booking">
                     <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
@@ -1572,7 +1888,24 @@
                     <li>Put your booking number in the notes or message, if your app allows it.</li>
                 </ol>
                 <img src="payment/qr.jpeg" alt="KLX payment QR code" class="bk-qr" onerror="var p=['payment/qr.jpeg.jpeg','payment/qr.jpg','payment/qr.jpeg.jpg','for payment/qr.jpeg'];var i=+(this.dataset.i||0);if(i<p.length){this.dataset.i=i+1;this.src=p[i];}else{this.onerror=null;}">
-                <p>Then send us a screenshot of your payment with your booking number (plus your theme photos!). Once we verify your payment, we'll email your official booking confirmation to <b id="bkDoneEmail"></b>.</p>
+                <div class="proof" id="proofBox">
+                    <h2>Upload proof of payment</h2>
+                    <p>Once you've paid, upload your payment screenshot here so we can confirm your booking.</p>
+                    <label class="pz-btn proof-pick" for="proofFile">Choose screenshot</label>
+                    <input type="file" id="proofFile" accept="image/*" hidden>
+                    <p class="bk-hint" id="proofName">No screenshot chosen yet</p>
+                    <img class="proof-preview" id="proofPreview" alt="Your payment screenshot" hidden>
+                    <button type="button" class="pz-btn dark bk-submit" id="proofSend" disabled>Upload proof of payment</button>
+                    <p class="bk-error" id="proofError" role="alert"></p>
+                </div>
+
+                <div class="proof-ok" id="proofOk" hidden>
+                    <h2>Proof received!</h2>
+                    <p>Salamat kaayo! We'll verify your payment and email your official booking confirmation to <b id="bkDoneEmail"></b>.</p>
+                    <p class="bk-hint" id="proofTestNote"></p>
+                </div>
+
+                <p class="bk-hint">Can't upload? Send your screenshot with your booking number on Messenger or text instead. Don't forget your theme photos too!</p>
 
                 <div class="pick-actions">
                     <a class="pz-btn dark" href="https://m.me/KLXreceiptPhotobooth" target="_blank">Messenger</a>
@@ -1586,6 +1919,220 @@
             <hr class="dash">
             <p class="book-note">Prefer to call? Ring us anytime.<br>
                 <b>0947 225 7991</b> (Smart / TNT) / <b>0935 126 5931</b> (TM / Globe)</p>
+        </section>
+
+        <!-- REVIEWS -->
+        <section id="reviews" class="page">
+            <h1>Reviews</h1>
+            <p class="small center">WHAT OUR CLIENTS SAY</p>
+            <hr class="dash">
+
+            <!-- add real reviews in the script: search REVIEWS -->
+            <div class="reviews" id="reviewList"></div>
+            <p class="soon" id="reviewEmpty">BE ONE OF OUR FIRST REVIEWS!</p>
+
+            <hr class="dash">
+            <p class="book-note">Booked with us? We'd love to hear from you.<br>
+                <a href="https://www.facebook.com/KLXreceiptPhotobooth/reviews" target="_blank"><b>Leave us a review on Facebook</b></a></p>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="page">
+            <h1>FAQ</h1>
+            <p class="small center">QUICK ANSWERS BEFORE YOU BOOK</p>
+            <hr class="dash">
+
+            <!-- EDIT THE ANSWERS BELOW TO MATCH YOUR POLICIES -->
+            <div class="faq">
+                <details>
+                    <summary>How do I book?</summary>
+                    <p>Go to Book Now, tap an open date, and fill out the booking form. Then pay the 50% downpayment using our QR code and send us your payment screenshot. We'll email your booking confirmation once it's verified.</p>
+                </details>
+                <details>
+                    <summary>How much is the downpayment?</summary>
+                    <p>50% of your total. Your date is officially reserved once we receive it.</p>
+                </details>
+                <details>
+                    <summary>What's the difference between Classic and Premium?</summary>
+                    <p>Classic uses standard thermal paper and covers up to 150 guests. Premium covers up to 200 guests, uses high-quality waterproof sticker paper, comes with 2 attendants, and includes 30 free magnetic prints. Check Rates for the full list.</p>
+                </details>
+                <details>
+                    <summary>How many photos can we print?</summary>
+                    <p>Unlimited sessions during your booked hours, with up to 6 prints per session.</p>
+                </details>
+                <details>
+                    <summary>How long will the booth stay at our event?</summary>
+                    <p>The whole event, up to 5 hours, plus prep time for setup. Need more time? Add extra hours when you book.</p>
+                </details>
+                <details>
+                    <summary>Can you match our theme?</summary>
+                    <p>Yes! Every layout is customized for your event. Tell us your theme and the celebrant's name in the booking form, and send us photos on Messenger so we can design it.</p>
+                </details>
+                <details>
+                    <summary>Do you go outside Iligan City?</summary>
+                    <p>Yes, a transport fee applies for venues outside Iligan City. Tick the box in the booking form and we'll confirm the fee with you.</p>
+                </details>
+                <details>
+                    <summary>What do you need at the venue?</summary>
+                    <p>A small space for the booth and access to a power outlet. Message us your venue details and we'll confirm the setup with you.</p>
+                </details>
+                <details>
+                    <summary>What's the self-serve option?</summary>
+                    <p>Classic self-serve has no attendant staying at the booth, but we're on call within 15 minutes if you need us.</p>
+                </details>
+                <details>
+                    <summary>How do we take care of the prints?</summary>
+                    <p>Keep thermal prints away from heat and direct sunlight. The free brown envelope helps protect them. For keepsakes that last longer, go for Premium's sticker paper or add magnetic prints.</p>
+                </details>
+                <details>
+                    <summary>Can we get digital copies?</summary>
+                    <p>If digital copies are part of your event, we'll give you an event code. Enter it on the My Photos page to find them.</p>
+                </details>
+                <details>
+                    <summary>Can I change my date?</summary>
+                    <p>Message us as early as possible and we'll check which dates are still open for you.</p>
+                </details>
+            </div>
+
+            <hr class="dash">
+            <p class="book-note">Still have questions?<br>
+                <a href="https://m.me/KLXreceiptPhotobooth" target="_blank"><b>Message us on Messenger</b></a></p>
+        </section>
+
+        <!-- MY PHOTOS (EVENT PHOTO FINDER) -->
+        <section id="myphotos" class="page">
+            <h1>My Photos</h1>
+            <p class="small center">FIND YOUR EVENT'S DIGITAL COPIES</p>
+            <hr class="dash">
+
+            <!-- add events and their photo links in the script: search EVENTS -->
+            <div class="finder">
+                <p>Enter the event code we gave you at your event.</p>
+                <form class="finder-row" id="finderForm" novalidate>
+                    <input type="text" id="finderCode" placeholder="EVENT CODE" autocomplete="off" aria-label="Event code">
+                    <button type="submit" class="pz-btn dark" style="flex: none; padding: 6px 20px;">Find</button>
+                </form>
+                <p class="finder-msg" id="finderMsg" role="alert"></p>
+
+                <div class="finder-result" id="finderResult" hidden>
+                    <p class="small">YOUR EVENT</p>
+                    <h2 id="frName"></h2>
+                    <p id="frDate" style="margin: 0;"></p>
+                    <a class="pz-btn dark" id="frLink" href="#" target="_blank">Open my photos</a>
+                    <p class="bk-hint">Posting your photos? Tag us @klxiligan!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GIFT CARDS -->
+        <section id="gifts" class="page">
+            <h1>Gift Cards</h1>
+            <p class="small center">GIVE THE GIFT OF MEMORIES</p>
+            <hr class="dash">
+
+            <p class="center">Got a friend with a birthday, debut, or wedding coming up? Gift them a KLX booth! Pick a package, pay through our QR, and we'll email you a gift certificate you can print or send.</p>
+
+            <div class="gift-card">
+                <p class="small">KLX RECEIPT PHOTOBOOTH</p>
+                <h2>Gift Certificate</h2>
+                <p class="small">THIS ENTITLES</p>
+                <div class="gift-to" id="gpTo">YOUR FRIEND</div>
+                <p class="small">TO A</p>
+                <div class="gift-pkg" id="gpPkg">CLASSIC BOOTH</div>
+                <p class="gift-msg" id="gpMsg"></p>
+                <p class="small" id="gpFrom">FROM: YOU</p>
+                <div class="barcode"></div>
+            </div>
+
+            <div class="bk" id="giftWrap">
+                <form id="giftForm" novalidate>
+                    <input type="hidden" name="access_key" id="gfKey" value="">
+                    <input type="hidden" name="subject" id="gfSubject" value="New KLX gift certificate request">
+                    <input type="hidden" name="from_name" value="KLX Website Gift Card">
+                    <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+                    <input type="hidden" name="gift-number" id="gfRef">
+                    <input type="hidden" name="amount" id="gfAmount">
+
+                    <fieldset class="bk-set" style="margin-top: 0;">
+                        <legend class="bk-legend">Pick a package</legend>
+                        <label class="bk-opt">
+                            <input type="radio" name="package" value="Classic (with attendant)" data-key="classic" checked>
+                            <span class="bk-opt-name">Classic, with attendant</span>
+                            <span data-price="classic"></span>
+                        </label>
+                        <label class="bk-opt">
+                            <input type="radio" name="package" value="Classic (self-serve)" data-key="selfserve">
+                            <span class="bk-opt-name">Classic, self-serve</span>
+                            <span data-price="selfserve"></span>
+                        </label>
+                        <label class="bk-opt">
+                            <input type="radio" name="package" value="Premium" data-key="premium">
+                            <span class="bk-opt-name">Premium</span>
+                            <span data-price="premium"></span>
+                        </label>
+                    </fieldset>
+
+                    <div class="bk-two">
+                        <div class="bk-field">
+                            <label for="gfTo">Gift for (their name)</label>
+                            <input type="text" id="gfTo" name="gift-for" maxlength="30" required>
+                        </div>
+                        <div class="bk-field">
+                            <label for="gfFrom">From (your name on the card)</label>
+                            <input type="text" id="gfFrom" name="gift-from" maxlength="30" required>
+                        </div>
+                    </div>
+
+                    <div class="bk-field">
+                        <label for="gfMsg">Short message (optional)</label>
+                        <input type="text" id="gfMsg" name="gift-message" maxlength="120" placeholder="e.g. Happy 18th! Enjoy your night!">
+                    </div>
+
+                    <fieldset class="bk-set">
+                        <legend class="bk-legend">Your details</legend>
+                        <div class="bk-field">
+                            <label for="gfName">Your full name</label>
+                            <input type="text" id="gfName" name="name" autocomplete="name" required>
+                        </div>
+                        <div class="bk-two">
+                            <div class="bk-field">
+                                <label for="gfPhone">Mobile number</label>
+                                <input type="tel" id="gfPhone" name="mobile" autocomplete="tel" placeholder="09XX XXX XXXX" required>
+                            </div>
+                            <div class="bk-field">
+                                <label for="gfEmail">Gmail / email address</label>
+                                <input type="email" id="gfEmail" name="email" autocomplete="email" placeholder="yourname@gmail.com" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="bk-summary">
+                        <div class="line total"><span>TOTAL TO PAY</span><span class="leader"></span><span id="gfTotal"></span></div>
+                        <p class="bk-hint">Gift certificates are paid in full. We'll email the certificate once your payment is verified.</p>
+                    </div>
+
+                    <p class="bk-error" id="gfError" role="alert"></p>
+                    <button type="submit" class="pz-btn dark bk-submit" id="gfSubmit">Send gift request</button>
+                </form>
+            </div>
+
+            <div class="bk-done" id="giftDone" hidden>
+                <hr class="dash">
+                <h2>Gift request received!</h2>
+                <p class="small">YOUR GIFT NUMBER</p>
+                <div class="bk-ref" id="gdRef"></div>
+                <p>Send exactly this amount:</p>
+                <div class="pay-amount" id="gdAmount"></div>
+                <button type="button" class="link-btn" id="gdCopy" style="margin-top: 6px;">Copy amount</button>
+                <img src="payment/qr.jpeg" alt="KLX payment QR code" class="bk-qr" onerror="var p=['payment/qr.jpeg.jpeg','payment/qr.jpg','payment/qr.jpeg.jpg','for payment/qr.jpeg'];var i=+(this.dataset.i||0);if(i<p.length){this.dataset.i=i+1;this.src=p[i];}else{this.onerror=null;}">
+                <p>Then send us a screenshot of your payment with your gift number. We'll email the gift certificate to <b id="gdEmail"></b> once it's verified.</p>
+                <div class="pick-actions">
+                    <a class="pz-btn dark" href="https://m.me/KLXreceiptPhotobooth" target="_blank">Messenger</a>
+                    <a class="pz-btn" id="gdText" href="#">Text us</a>
+                </div>
+                <p class="bk-hint" id="gdTestNote"></p>
+                <button type="button" class="link-btn" id="gdAgain">Send another gift</button>
+            </div>
         </section>
 
         <!-- CONTACT US -->
@@ -1657,6 +2204,41 @@
                     <span class="small">THIS IS THE PICTURE YOU'RE REBUILDING</span>
                 </div>
             </div>
+
+            <hr class="dash">
+
+            <div class="bk">
+                <h2 class="center">02 Make Your KLX Receipt</h2>
+                <p class="center">Type your name and get your own KLX receipt to post on your story!</p>
+
+                <div class="bk-two">
+                    <div class="bk-field">
+                        <label for="rmName">Your name</label>
+                        <input type="text" id="rmName" maxlength="16" placeholder="e.g. Ella">
+                    </div>
+                    <div class="bk-field">
+                        <label for="rmOcc">Occasion</label>
+                        <select id="rmOcc">
+                            <option>Just because</option>
+                            <option>Birthday</option>
+                            <option>Debut</option>
+                            <option>Wedding</option>
+                            <option>Anniversary</option>
+                            <option>Graduation</option>
+                            <option>Barkada day</option>
+                            <option>Church event</option>
+                        </select>
+                    </div>
+                </div>
+
+                <canvas id="rmCanvas" width="600" height="900" aria-label="Your KLX receipt"></canvas>
+
+                <div class="pz-row">
+                    <button type="button" class="pz-btn dark" id="rmSave">Save image</button>
+                    <button type="button" class="pz-btn" id="rmShare">Share</button>
+                </div>
+                <p class="bk-hint center">Post it and tag us @klxiligan!</p>
+            </div>
         </section>
 
         <!-- RECEIPT FOOTER -->
@@ -1667,6 +2249,9 @@
     </main>
 
 </div>
+
+<!-- FLOATING BOOK BUTTON (shows on every page except Book Now) -->
+<button type="button" class="float-book" id="floatBook" onclick="goToBooking()">Book now</button>
 
 <script>
     // Switch between Home, Photos, and the other sections
@@ -1687,6 +2272,8 @@
         document.querySelectorAll('video').forEach(function (v) {
             v.pause();
         });
+
+        document.getElementById('floatBook').hidden = (pageId === 'availability');
 
         window.scrollTo(0, 0);
 
@@ -1853,6 +2440,11 @@
         if (viewMonth > 11) { viewMonth = 0; viewYear++; }
         renderCalendar();
     };
+
+    // ===== PROOF OF PAYMENT UPLOAD =====
+    // PASTE your Google Apps Script web app link below (it ends with /exec)
+    var PAYMENT_UPLOAD_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+    var lastBooking = null;
 
     // ===== GOOGLE CALENDAR BOOKINGS (free/busy only, client details stay private) =====
     var GCAL_ID = "klxiligan@gmail.com";
@@ -2031,6 +2623,9 @@
     function bkOpen() {
         if (!pickedKey) return;
         bkSetDate();
+        if (pendingTheme && !document.getElementById("bkTheme").value) {
+            document.getElementById("bkTheme").value = pendingTheme;
+        }
         document.getElementById("pickBox").hidden = true;
         document.getElementById("bkDone").hidden = true;
         var wrap = document.getElementById("bkWrap");
@@ -2119,7 +2714,31 @@
         });
     });
 
+    function fmtTime(v) {
+        if (!v) return "";
+        var p = v.split(":"), h = +p[0];
+        var ap = h >= 12 ? "PM" : "AM";
+        return (h % 12 || 12) + ":" + p[1] + " " + ap;
+    }
+
     function bkShowDone(ref, isLocal) {
+        lastBooking = {
+            ref: ref,
+            name: document.getElementById("bkName").value.trim(),
+            email: document.getElementById("bkEmail").value.trim(),
+            mobile: document.getElementById("bkPhone").value.trim(),
+            facebook: document.getElementById("bkFb").value.trim(),
+            date: bkDateLabel,
+            time: fmtTime(document.getElementById("bkTime").value),
+            venue: document.getElementById("bkVenue").value.trim() + (document.getElementById("bkOutside").checked ? " (outside Iligan)" : ""),
+            eventType: document.getElementById("bkType").value,
+            packageName: PACKAGE_NAMES[bkPackage()],
+            theme: document.getElementById("bkTheme").value.trim(),
+            total: document.getElementById("bkTotal").textContent,
+            dp: document.getElementById("bkDp").textContent
+        };
+        proofReset();
+
         document.getElementById("bkDoneRef").textContent = ref;
         document.getElementById("bkDoneDate").textContent = document.getElementById("bkDateShow").textContent;
         document.getElementById("bkDoneTotal").textContent = document.getElementById("bkTotal").textContent;
@@ -2140,6 +2759,7 @@
         done.scrollIntoView({ behavior: "smooth", block: "start" });
 
         bkForm.reset();
+        pendingTheme = "";
         pickedKey = null;
         bkDateKey = null;
         drawCalendar();
@@ -2166,6 +2786,531 @@
         document.getElementById("bkDone").hidden = true;
         document.querySelector(".cal").scrollIntoView({ behavior: "smooth", block: "start" });
     };
+
+    // ===== SHARED HELPERS =====
+    function isTestMode() {
+        var key = bkForm.querySelector('input[name="access_key"]').value;
+        return location.protocol === "file:" || location.hostname === "" || location.hostname === "127.0.0.1" ||
+            location.hostname === "localhost" || /^(192\.168\.|10\.)/.test(location.hostname) || key.indexOf("PASTE") === 0;
+    }
+
+    function copyText(text, btn, label) {
+        function done() {
+            btn.textContent = "Copied!";
+            setTimeout(function () { btn.textContent = label; }, 1500);
+        }
+        function fallback() {
+            var t = document.createElement("textarea");
+            t.value = text;
+            document.body.appendChild(t);
+            t.select();
+            try { document.execCommand("copy"); done(); } catch (e) {}
+            document.body.removeChild(t);
+        }
+        if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, fallback); } else { fallback(); }
+    }
+
+    function sendWeb3Form(form) {
+        return fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Accept": "application/json" },
+            body: new FormData(form)
+        }).then(function (res) { return res.json(); })
+          .then(function (data) {
+              if (!data || !data.success) throw new Error((data && data.message) || "Send failed");
+              return data;
+          });
+    }
+
+    function isLocalHost() {
+        return location.protocol === "file:" || location.hostname === "" || location.hostname === "127.0.0.1" ||
+            location.hostname === "localhost" || /^(192\.168\.|10\.)/.test(location.hostname);
+    }
+
+    // ===== PROOF OF PAYMENT UPLOAD =====
+    var proofFile = null;
+    var proofPreviewUrl = "";
+
+    function proofReset() {
+        proofFile = null;
+        if (proofPreviewUrl) URL.revokeObjectURL(proofPreviewUrl);
+        proofPreviewUrl = "";
+        document.getElementById("proofFile").value = "";
+        document.getElementById("proofName").textContent = "No screenshot chosen yet";
+        document.getElementById("proofPreview").hidden = true;
+        document.getElementById("proofSend").disabled = true;
+        document.getElementById("proofSend").textContent = "Upload proof of payment";
+        document.getElementById("proofError").textContent = "";
+        document.getElementById("proofBox").hidden = false;
+        document.getElementById("proofOk").hidden = true;
+    }
+
+    // shrinks big phone screenshots so they upload fast but stay readable
+    function shrinkImage(file) {
+        return new Promise(function (resolve, reject) {
+            var url = URL.createObjectURL(file);
+            var im = new Image();
+            im.onload = function () {
+                var max = 1600;
+                var scale = Math.min(1, max / Math.max(im.width, im.height));
+                var c = document.createElement("canvas");
+                c.width = Math.round(im.width * scale);
+                c.height = Math.round(im.height * scale);
+                var x = c.getContext("2d");
+                x.fillStyle = "#ffffff";
+                x.fillRect(0, 0, c.width, c.height);
+                x.drawImage(im, 0, 0, c.width, c.height);
+                URL.revokeObjectURL(url);
+                resolve(c.toDataURL("image/jpeg", 0.85).split(",")[1]);
+            };
+            im.onerror = function () {
+                URL.revokeObjectURL(url);
+                reject(new Error("Could not read image"));
+            };
+            im.src = url;
+        });
+    }
+
+    document.getElementById("proofFile").addEventListener("change", function (e) {
+        var f = e.target.files[0];
+        var err = document.getElementById("proofError");
+        err.textContent = "";
+        if (!f) return;
+        if (!/^image\//.test(f.type)) {
+            err.textContent = "Please choose a picture (screenshot or photo) of your payment.";
+            return;
+        }
+        if (f.size > 20 * 1024 * 1024) {
+            err.textContent = "That picture is too big. Please choose a screenshot under 20 MB.";
+            return;
+        }
+        proofFile = f;
+        if (proofPreviewUrl) URL.revokeObjectURL(proofPreviewUrl);
+        proofPreviewUrl = URL.createObjectURL(f);
+        var prev = document.getElementById("proofPreview");
+        prev.src = proofPreviewUrl;
+        prev.hidden = false;
+        document.getElementById("proofName").textContent = f.name;
+        document.getElementById("proofSend").disabled = false;
+    });
+
+    document.getElementById("proofSend").addEventListener("click", function () {
+        if (!proofFile || !lastBooking) return;
+        var btn = this;
+        var err = document.getElementById("proofError");
+        err.textContent = "";
+        btn.disabled = true;
+        btn.textContent = "Uploading...";
+
+        var test = isLocalHost() || PAYMENT_UPLOAD_URL.indexOf("PASTE") === 0;
+
+        shrinkImage(proofFile).then(function (data) {
+            if (test) return { ok: true };
+            var payload = {};
+            Object.keys(lastBooking).forEach(function (k) { payload[k] = lastBooking[k]; });
+            payload.mimeType = "image/jpeg";
+            payload.data = data;
+            // sent as plain text so Google accepts it from your website
+            return fetch(PAYMENT_UPLOAD_URL, { method: "POST", body: JSON.stringify(payload) })
+                .then(function (res) { return res.json(); });
+        })
+        .then(function (res) {
+            if (!res || !res.ok) throw new Error((res && res.error) || "Upload failed");
+            document.getElementById("bkDoneEmail").textContent = lastBooking.email;
+            document.getElementById("proofTestNote").textContent = test
+                ? "TEST MODE: the screenshot was not uploaded (you're on your computer, or the upload link isn't added yet)."
+                : "";
+            document.getElementById("proofBox").hidden = true;
+            document.getElementById("proofOk").hidden = false;
+        })
+        .catch(function () {
+            err.textContent = "Sorry, the upload didn't go through. Please try again, or send your screenshot to us on Messenger.";
+            btn.disabled = false;
+            btn.textContent = "Upload proof of payment";
+        });
+    });
+
+    // ===== PROMO COUNTDOWN =====
+    // EDIT: when your current promo ends (Philippine time) and its name.
+    // To hide the banner, set PROMO_END = "";
+    var PROMO_END = "2026-10-31T23:59:59+08:00";
+    var PROMO_NAME = "Ber Month Promo";
+    var promoTimer = null;
+
+    function promoTick() {
+        var strip = document.getElementById("promoStrip");
+        var left = PROMO_END ? new Date(PROMO_END) - new Date() : 0;
+        if (!(left > 0)) {
+            strip.hidden = true;
+            if (promoTimer) clearInterval(promoTimer);
+            return;
+        }
+        var d = Math.floor(left / 86400000);
+        var h = Math.floor(left / 3600000) % 24;
+        var m = Math.floor(left / 60000) % 60;
+        var sec = Math.floor(left / 1000) % 60;
+        document.getElementById("promoName").textContent = PROMO_NAME.toUpperCase();
+        document.getElementById("promoTime").textContent = (d ? d + "D " : "") + pad(h) + "H " + pad(m) + "M " + pad(sec) + "S";
+        strip.hidden = false;
+    }
+    promoTimer = setInterval(promoTick, 1000);
+    promoTick();
+
+    // ===== KLX SO FAR (home page numbers) =====
+    // EDIT: put your real numbers. Leave a value as "" to hide that line.
+    var STATS = [
+        { label: "EVENTS SERVED", value: "" },
+        { label: "PRINTS GIVEN", value: "" },
+        { label: "HAPPY CLIENTS", value: "" }
+    ];
+
+    (function () {
+        var box = document.getElementById("statsLines");
+        STATS.forEach(function (st) {
+            if (!st.value) return;
+            var row = document.createElement("div");
+            row.className = "line";
+            row.innerHTML = '<span></span><span class="leader"></span><span></span>';
+            row.children[0].textContent = st.label;
+            row.children[2].textContent = st.value;
+            box.appendChild(row);
+        });
+        document.getElementById("statsWrap").hidden = !box.children.length;
+    })();
+
+    // ===== THEME & LAYOUT GALLERY =====
+    // EDIT: make a folder named "layouts" next to index.html, put your layout pictures there,
+    // then list them below (file name + theme name). Pictures that don't exist are hidden automatically.
+    var THEMES = [
+        { img: "layouts/theme 1.jpg", name: "Pastel Garden" },
+        { img: "layouts/theme 2.jpg", name: "Classic Black & White" },
+        { img: "layouts/theme 3.jpg", name: "Rustic Boho" },
+        { img: "layouts/theme 4.jpg", name: "Pink Party" }
+    ];
+    var pendingTheme = "";
+
+    (function () {
+        var box = document.getElementById("themeGallery");
+        var soon = document.getElementById("themeSoon");
+        THEMES.forEach(function (t) {
+            var fig = document.createElement("figure");
+            var img = document.createElement("img");
+            img.alt = t.name + " layout sample";
+            img.loading = "lazy";
+            img.onload = function () { soon.hidden = true; };
+            img.onerror = function () { fig.remove(); };
+            img.src = t.img;
+            var cap = document.createElement("figcaption");
+            cap.textContent = t.name.toUpperCase();
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "pz-btn theme-btn";
+            btn.textContent = "Book with this theme";
+            btn.onclick = function () { pendingTheme = t.name; goToBooking(); };
+            fig.appendChild(img);
+            fig.appendChild(cap);
+            fig.appendChild(btn);
+            box.appendChild(fig);
+        });
+    })();
+
+    // ===== REVIEWS =====
+    // EDIT: add real reviews from your clients. Copy the example line, remove the // at the start,
+    // and change the details. Add a comma between reviews.
+    var REVIEWS = [
+        // { name: "Ella S.", event: "18th Birthday", date: "Nov 2026", stars: 5, text: "Grabe ka nindot! Our guests loved the receipt prints." }
+    ];
+
+    (function () {
+        var box = document.getElementById("reviewList");
+        REVIEWS.forEach(function (r) {
+            var card = document.createElement("div");
+            card.className = "review";
+            var stars = Math.max(1, Math.min(5, r.stars || 5));
+            card.innerHTML =
+                '<p class="small center" style="margin: 0;">CUSTOMER COPY</p>' +
+                '<div class="review-stars"></div>' +
+                '<p class="review-text"></p>' +
+                '<hr class="dash" style="margin: 10px 0;">' +
+                '<div class="line"><span>NAME</span><span class="leader"></span><span class="rv-name"></span></div>' +
+                '<div class="line"><span>EVENT</span><span class="leader"></span><span class="rv-event"></span></div>' +
+                '<div class="line"><span>DATE</span><span class="leader"></span><span class="rv-date"></span></div>';
+            card.querySelector(".review-stars").textContent = "\u2605\u2605\u2605\u2605\u2605".slice(0, stars) + "\u2606\u2606\u2606\u2606\u2606".slice(0, 5 - stars);
+            card.querySelector(".review-text").textContent = "\u201C" + (r.text || "") + "\u201D";
+            card.querySelector(".rv-name").textContent = r.name || "";
+            card.querySelector(".rv-event").textContent = r.event || "";
+            card.querySelector(".rv-date").textContent = r.date || "";
+            box.appendChild(card);
+        });
+        document.getElementById("reviewEmpty").hidden = REVIEWS.length > 0;
+    })();
+
+    // ===== MY PHOTOS (EVENT PHOTO FINDER) =====
+    // EDIT: after each event, add a code and the Google Drive folder link of its photos.
+    // Copy the example line, remove the // at the start, and change the details.
+    // Tip: set the Drive folder to "Anyone with the link can view".
+    var EVENTS = {
+        // "ELLA18": { name: "Ella's 18th Birthday", date: "Nov 15, 2026", link: "https://drive.google.com/your-folder-link" }
+    };
+
+    (function () {
+        var lookup = {};
+        Object.keys(EVENTS).forEach(function (k) {
+            lookup[k.toUpperCase().replace(/\s+/g, "")] = EVENTS[k];
+        });
+
+        document.getElementById("finderForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            var code = document.getElementById("finderCode").value.toUpperCase().replace(/\s+/g, "");
+            var msg = document.getElementById("finderMsg");
+            var result = document.getElementById("finderResult");
+            result.hidden = true;
+            msg.textContent = "";
+
+            if (!code) {
+                msg.textContent = "Please enter your event code.";
+                return;
+            }
+            var ev = lookup[code];
+            if (!ev) {
+                msg.textContent = "We couldn't find that code. Double-check it, or message us and we'll help.";
+                return;
+            }
+            document.getElementById("frName").textContent = ev.name || "";
+            document.getElementById("frDate").textContent = ev.date || "";
+            document.getElementById("frLink").href = ev.link || "#";
+            result.hidden = false;
+        });
+    })();
+
+    // ===== GIFT CARDS =====
+    var giftForm = document.getElementById("giftForm");
+    var GIFT_NAMES = { classic: "Classic Booth", selfserve: "Self-Serve Booth", premium: "Premium Booth" };
+    var giftLastAmount = 0;
+
+    function giftPkg() {
+        var r = giftForm.querySelector('input[name="package"]:checked');
+        return r ? r.getAttribute("data-key") : "classic";
+    }
+
+    function giftUpdate() {
+        var pkg = giftPkg();
+        giftLastAmount = PRICES[pkg];
+        var to = document.getElementById("gfTo").value.trim();
+        var from = document.getElementById("gfFrom").value.trim();
+        var note = document.getElementById("gfMsg").value.trim();
+        document.getElementById("gpTo").textContent = to || "YOUR FRIEND";
+        document.getElementById("gpPkg").textContent = GIFT_NAMES[pkg];
+        document.getElementById("gpMsg").textContent = note ? "\u201C" + note + "\u201D" : "";
+        document.getElementById("gpFrom").textContent = "FROM: " + (from || "YOU").toUpperCase();
+        document.getElementById("gfTotal").textContent = peso(giftLastAmount);
+        document.getElementById("gfAmount").value = peso(giftLastAmount);
+    }
+
+    giftForm.addEventListener("input", giftUpdate);
+    giftForm.addEventListener("change", giftUpdate);
+    giftUpdate();
+
+    giftForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var err = document.getElementById("gfError");
+        err.textContent = "";
+
+        var required = [
+            ["gfTo", "who the gift is for"],
+            ["gfFrom", "who the gift is from"],
+            ["gfName", "your full name"],
+            ["gfPhone", "your mobile number"],
+            ["gfEmail", "your Gmail or email address"]
+        ];
+        for (var i = 0; i < required.length; i++) {
+            var el = document.getElementById(required[i][0]);
+            if (!el.value.trim()) {
+                err.textContent = "Please add " + required[i][1] + ".";
+                el.focus();
+                return;
+            }
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById("gfEmail").value.trim())) {
+            err.textContent = "Please check your email address.";
+            document.getElementById("gfEmail").focus();
+            return;
+        }
+        if (document.getElementById("gfPhone").value.replace(/\D/g, "").length < 10) {
+            err.textContent = "Please check your mobile number.";
+            document.getElementById("gfPhone").focus();
+            return;
+        }
+
+        giftUpdate();
+        var now = new Date();
+        var ref = "GIFT-" + pad(now.getMonth() + 1) + pad(now.getDate()) + "-" + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById("gfRef").value = ref;
+        document.getElementById("gfKey").value = bkForm.querySelector('input[name="access_key"]').value;
+        document.getElementById("gfSubject").value = "New KLX gift certificate request " + ref;
+
+        var btn = document.getElementById("gfSubmit");
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+
+        var test = isTestMode();
+        var send = test ? Promise.resolve({ success: true }) : sendWeb3Form(giftForm);
+
+        send.then(function () {
+            document.getElementById("gdRef").textContent = ref;
+            document.getElementById("gdAmount").textContent = peso(giftLastAmount);
+            document.getElementById("gdEmail").textContent = document.getElementById("gfEmail").value.trim();
+            document.getElementById("gdText").href = "sms:09472257991?&body=" + encodeURIComponent("Hi KLX! Here's my payment for gift certificate " + ref + ".");
+            document.getElementById("gdTestNote").textContent = test
+                ? "TEST MODE: this gift request was not sent (you're on your computer, or the Web3Forms key isn't added yet)."
+                : "";
+            document.getElementById("giftWrap").hidden = true;
+            var done = document.getElementById("giftDone");
+            done.hidden = false;
+            done.scrollIntoView({ behavior: "smooth", block: "start" });
+        })
+        .catch(function () {
+            err.textContent = "Sorry, your request didn't go through. Please try again or message us directly.";
+        })
+        .then(function () {
+            btn.disabled = false;
+            btn.textContent = "Send gift request";
+        });
+    });
+
+    document.getElementById("gdCopy").onclick = function () {
+        copyText(String(giftLastAmount), this, "Copy amount");
+    };
+
+    document.getElementById("gdAgain").onclick = function () {
+        giftForm.reset();
+        giftUpdate();
+        document.getElementById("giftDone").hidden = true;
+        document.getElementById("giftWrap").hidden = false;
+        window.scrollTo(0, 0);
+    };
+
+    // ===== MAKE YOUR KLX RECEIPT =====
+    var rmCanvas = document.getElementById("rmCanvas");
+
+    function rmFit(ctx, text, maxWidth, size, family) {
+        var s = size;
+        ctx.font = s + "px " + family;
+        while (s > 14 && ctx.measureText(text).width > maxWidth) {
+            s -= 2;
+            ctx.font = s + "px " + family;
+        }
+    }
+
+    function rmDash(ctx, y) {
+        ctx.save();
+        ctx.setLineDash([14, 10]);
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(40, y);
+        ctx.lineTo(560, y);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function rmRow(ctx, label, value, y, bold) {
+        var mono = '"Space Mono", "Courier New", monospace';
+        ctx.font = (bold ? "bold " : "") + "26px " + mono;
+        ctx.textAlign = "left";
+        ctx.fillText(label, 50, y);
+        var lw = ctx.measureText(label).width;
+        rmFit(ctx, value, 300, bold ? 30 : 26, (bold ? "bold " : "") + mono);
+        ctx.textAlign = "right";
+        ctx.fillText(value, 550, y);
+        var vw = ctx.measureText(value).width;
+        ctx.save();
+        ctx.setLineDash([2, 7]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(50 + lw + 12, y - 8);
+        ctx.lineTo(550 - vw - 12, y - 8);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function rmDraw() {
+        var ctx = rmCanvas.getContext("2d");
+        var display = 'VT323, "Courier New", monospace';
+        var mono = '"Space Mono", "Courier New", monospace';
+        var name = (document.getElementById("rmName").value.trim() || "YOUR NAME").toUpperCase();
+        var occ = document.getElementById("rmOcc").value.toUpperCase();
+        var t = new Date();
+        var date = monthNames[t.getMonth()].slice(0, 3).toUpperCase() + " " + t.getDate() + ", " + t.getFullYear();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, 600, 900);
+        ctx.fillStyle = "#000000";
+        ctx.strokeStyle = "#000000";
+
+        ctx.textAlign = "center";
+        ctx.font = "150px " + display;
+        ctx.fillText("KLX", 300, 150);
+        ctx.font = "20px " + mono;
+        ctx.fillText("RECEIPT PHOTOBOOTH / ILIGAN", 300, 190);
+        rmDash(ctx, 225);
+
+        rmRow(ctx, "NAME", name, 285);
+        rmRow(ctx, "OCCASION", occ, 340);
+        rmRow(ctx, "DATE", date, 395);
+        rmDash(ctx, 430);
+        rmRow(ctx, "GOOD VIBES", "x1", 490);
+        rmRow(ctx, "MEMORIES", "UNLI", 545);
+        rmRow(ctx, "BAD VIBES", "0", 600);
+        rmDash(ctx, 635);
+        rmRow(ctx, "TOTAL", "SMILES", 700, true);
+
+        var bars = [4, 2, 6, 3, 2, 5, 3, 4, 2, 6, 2, 3, 5, 2, 4, 3, 6, 2, 3, 4, 2, 5, 3, 2, 6, 4, 2, 3, 5, 2];
+        var bx = 120;
+        for (var i = 0; i < bars.length; i++) {
+            if (i % 2 === 0) ctx.fillRect(bx, 740, bars[i] * 2, 70);
+            bx += bars[i] * 2 + 3;
+        }
+
+        ctx.textAlign = "center";
+        ctx.font = "18px " + mono;
+        ctx.fillText("*** THANK YOU FOR CHOOSING KLX ***", 300, 845);
+        ctx.fillText("@klxiligan", 300, 875);
+    }
+
+    document.getElementById("rmName").addEventListener("input", rmDraw);
+    document.getElementById("rmOcc").addEventListener("change", rmDraw);
+    rmDraw();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(rmDraw);
+
+    function rmFileName() {
+        var n = document.getElementById("rmName").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        return "klx-receipt" + (n ? "-" + n : "") + ".png";
+    }
+
+    document.getElementById("rmSave").onclick = function () {
+        var a = document.createElement("a");
+        a.download = rmFileName();
+        a.href = rmCanvas.toDataURL("image/png");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    var rmShareBtn = document.getElementById("rmShare");
+    if (!navigator.share) {
+        rmShareBtn.hidden = true;
+    } else {
+        rmShareBtn.onclick = function () {
+            rmCanvas.toBlob(function (blob) {
+                var file = new File([blob], rmFileName(), { type: "image/png" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({ files: [file], title: "My KLX receipt", text: "Made my own KLX receipt! @klxiligan" }).catch(function () {});
+                } else {
+                    document.getElementById("rmSave").click();
+                }
+            });
+        };
+    }
 
     // ===== GAMES: SLIDE PUZZLE =====
     var pzBoard = document.getElementById('pzBoard');
