@@ -1269,55 +1269,6 @@
         color: var(--ink);
     }
 
-    /* ===== MY PHOTOS (EVENT FINDER) ===== */
-    .finder {
-        max-width: 460px;
-        margin: 0 auto;
-        text-align: center;
-    }
-
-    .finder-row {
-        display: flex;
-        gap: 8px;
-        margin-top: 12px;
-    }
-
-    .finder-row input {
-        flex: 1;
-        min-width: 0;
-        font-family: var(--body);
-        font-size: 18px;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        text-align: center;
-        border: 2px dashed var(--ink);
-        border-radius: 0;
-        padding: 8px;
-    }
-
-    .finder-msg {
-        color: #b00020;
-        font-size: 13px;
-        min-height: 1.2em;
-        margin: 10px 0 0;
-    }
-
-    .finder-result {
-        border: 2px solid var(--ink);
-        padding: 18px 16px;
-        margin-top: 14px;
-    }
-
-    .finder-result[hidden] {
-        display: none;
-    }
-
-    .finder-result .pz-btn {
-        display: block;
-        text-decoration: none;
-        margin-top: 12px;
-    }
-
     /* ===== GIFT CARDS ===== */
     .gift-card {
         max-width: 420px;
@@ -1424,10 +1375,9 @@
             <button onclick="showPage('availability', this)" id="navAvailability"><span class="num">06</span><span class="label">Book Now</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('reviews', this)"><span class="num">07</span><span class="label">Reviews</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('faq', this)"><span class="num">08</span><span class="label">FAQ</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('myphotos', this)"><span class="num">09</span><span class="label">My Photos</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('gifts', this)"><span class="num">10</span><span class="label">Gift Cards</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('contact', this)"><span class="num">11</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('games', this)"><span class="num">12</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('gifts', this)"><span class="num">09</span><span class="label">Gift Cards</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('contact', this)"><span class="num">10</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('games', this)"><span class="num">11</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
         </div>
 
         <hr class="dash">
@@ -1876,6 +1826,7 @@
                 <div class="line"><span>EVENT DATE</span><span class="leader"></span><span id="bkDoneDate"></span></div>
                 <div class="line"><span>TOTAL</span><span class="leader"></span><span id="bkDoneTotal"></span></div>
                 <div class="line total"><span>50% DP TO PAY</span><span class="leader"></span><span id="bkDoneDp"></span></div>
+                <p class="bk-hint" id="bkMailNote" hidden>We also emailed these details to you. Can't find it? Check your Spam folder.</p>
 
                 <hr class="dash">
                 <h2>Pay your DP</h2>
@@ -1985,10 +1936,6 @@
                     <p>Keep thermal prints away from heat and direct sunlight. The free brown envelope helps protect them. For keepsakes that last longer, go for Premium's sticker paper or add magnetic prints.</p>
                 </details>
                 <details>
-                    <summary>Can we get digital copies?</summary>
-                    <p>If digital copies are part of your event, we'll give you an event code. Enter it on the My Photos page to find them.</p>
-                </details>
-                <details>
                     <summary>Can I change my date?</summary>
                     <p>Message us as early as possible and we'll check which dates are still open for you.</p>
                 </details>
@@ -1997,31 +1944,6 @@
             <hr class="dash">
             <p class="book-note">Still have questions?<br>
                 <a href="https://m.me/KLXreceiptPhotobooth" target="_blank"><b>Message us on Messenger</b></a></p>
-        </section>
-
-        <!-- MY PHOTOS (EVENT PHOTO FINDER) -->
-        <section id="myphotos" class="page">
-            <h1>My Photos</h1>
-            <p class="small center">FIND YOUR EVENT'S DIGITAL COPIES</p>
-            <hr class="dash">
-
-            <!-- add events and their photo links in the script: search EVENTS -->
-            <div class="finder">
-                <p>Enter the event code we gave you at your event.</p>
-                <form class="finder-row" id="finderForm" novalidate>
-                    <input type="text" id="finderCode" placeholder="EVENT CODE" autocomplete="off" aria-label="Event code">
-                    <button type="submit" class="pz-btn dark" style="flex: none; padding: 6px 20px;">Find</button>
-                </form>
-                <p class="finder-msg" id="finderMsg" role="alert"></p>
-
-                <div class="finder-result" id="finderResult" hidden>
-                    <p class="small">YOUR EVENT</p>
-                    <h2 id="frName"></h2>
-                    <p id="frDate" style="margin: 0;"></p>
-                    <a class="pz-btn dark" id="frLink" href="#" target="_blank">Open my photos</a>
-                    <p class="bk-hint">Posting your photos? Tag us @klxiligan!</p>
-                </div>
-            </div>
         </section>
 
         <!-- GIFT CARDS -->
@@ -2442,7 +2364,8 @@
     };
 
     // ===== PROOF OF PAYMENT UPLOAD =====
-    // PASTE your Google Apps Script web app link below (it ends with /exec)
+    // KLX BOOKING SCRIPT: PASTE your Google Apps Script web app link below (it ends with /exec), keep the quotes
+    // It handles bookings (calendar, emails, confirm button) and payment screenshots.
     var PAYMENT_UPLOAD_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
     var lastBooking = null;
 
@@ -2539,6 +2462,7 @@
     var bkDateKey = null;
     var bkDateLabel = "";
     var bkLastDp = 0;
+    var bkLastTotal = 0;
 
     function peso(n) {
         return "\u20B1" + n.toLocaleString("en-US");
@@ -2599,6 +2523,7 @@
 
         var dp = Math.ceil(total / 2);
         bkLastDp = dp;
+        bkLastTotal = total;
         document.getElementById("bkLines").innerHTML = html;
         document.getElementById("bkTotal").textContent = peso(total) + (outside ? " + transport" : "");
         document.getElementById("bkDp").textContent = peso(dp);
@@ -2690,16 +2615,36 @@
 
         document.getElementById("bkSubject").value = "New KLX booking " + ref + " (" + bkDateLabel + ")";
 
-        // test mode on your computer, or until the Web3Forms key is added
+        // test mode on your computer, or until a sending method is added
         var keyField = bkForm.querySelector('input[name="access_key"]');
-        var isLocal = location.protocol === "file:" || location.hostname === "" || location.hostname === "127.0.0.1" || location.hostname === "localhost" || /^(192\.168\.|10\.)/.test(location.hostname) || keyField.value.indexOf("PASTE") === 0;
-        var send = isLocal
-            ? Promise.resolve({ success: true })
-            : fetch("https://api.web3forms.com/submit", {
+        var hasScript = PAYMENT_UPLOAD_URL.indexOf("PASTE") !== 0;
+        var hasKey = keyField.value.indexOf("PASTE") !== 0;
+        var isLocal = isLocalHost() || (!hasScript && !hasKey);
+        bkUsedScript = false;
+
+        function viaWeb3() {
+            return fetch("https://api.web3forms.com/submit", {
                 method: "POST",
                 headers: { "Accept": "application/json" },
                 body: new FormData(bkForm)
             }).then(function (res) { return res.json(); });
+        }
+        function viaScript() {
+            var payload = bkCollect(ref);
+            payload.action = "book";
+            // sent as plain text so Google accepts it from your website
+            return fetch(PAYMENT_UPLOAD_URL, { method: "POST", body: JSON.stringify(payload) })
+                .then(function (res) { return res.json(); })
+                .then(function (d) {
+                    if (!d || !d.ok) throw new Error((d && d.error) || "Send failed");
+                    bkUsedScript = true;
+                    return { success: true };
+                });
+        }
+
+        var send = isLocal ? Promise.resolve({ success: true })
+            : hasScript ? viaScript().catch(function () { return hasKey ? viaWeb3() : Promise.reject(); })
+            : viaWeb3();
 
         send.then(function (data) {
             if (!data || !data.success) throw new Error((data && data.message) || "Send failed");
@@ -2714,6 +2659,41 @@
         });
     });
 
+    var bkUsedScript = false;
+
+    // every detail of the booking, used for emails, calendar and the payment upload
+    function bkCollect(ref) {
+        var val = function (id) { return document.getElementById(id).value.trim(); };
+        var pkg = bkPackage();
+        return {
+            ref: ref,
+            name: val("bkName"),
+            email: val("bkEmail"),
+            mobile: val("bkPhone"),
+            facebook: val("bkFb"),
+            date: bkDateLabel,
+            dateKey: bkDateKey,
+            time: fmtTime(val("bkTime")),
+            timeRaw: val("bkTime"),
+            venue: val("bkVenue"),
+            outside: document.getElementById("bkOutside").checked ? "Yes" : "No",
+            eventType: val("bkType"),
+            guests: val("bkGuests"),
+            packageName: PACKAGE_NAMES[pkg],
+            extraHours: String(bkNum("bkHours")),
+            magnetSets: String(bkNum("bkMagnet")),
+            guestbook: document.getElementById("bkGuestbook").checked ? "Yes" : "No",
+            theme: val("bkTheme"),
+            celebrant: val("bkCelebrant"),
+            photoLink: val("bkPhoto"),
+            notes: val("bkNotes"),
+            total: document.getElementById("bkTotal").textContent,
+            dp: document.getElementById("bkDp").textContent,
+            totalNum: bkLastTotal,
+            dpNum: bkLastDp
+        };
+    }
+
     function fmtTime(v) {
         if (!v) return "";
         var p = v.split(":"), h = +p[0];
@@ -2722,21 +2702,7 @@
     }
 
     function bkShowDone(ref, isLocal) {
-        lastBooking = {
-            ref: ref,
-            name: document.getElementById("bkName").value.trim(),
-            email: document.getElementById("bkEmail").value.trim(),
-            mobile: document.getElementById("bkPhone").value.trim(),
-            facebook: document.getElementById("bkFb").value.trim(),
-            date: bkDateLabel,
-            time: fmtTime(document.getElementById("bkTime").value),
-            venue: document.getElementById("bkVenue").value.trim() + (document.getElementById("bkOutside").checked ? " (outside Iligan)" : ""),
-            eventType: document.getElementById("bkType").value,
-            packageName: PACKAGE_NAMES[bkPackage()],
-            theme: document.getElementById("bkTheme").value.trim(),
-            total: document.getElementById("bkTotal").textContent,
-            dp: document.getElementById("bkDp").textContent
-        };
+        lastBooking = bkCollect(ref);
         proofReset();
 
         document.getElementById("bkDoneRef").textContent = ref;
@@ -2748,6 +2714,8 @@
 
         var msg = "Hi KLX! Here's my DP for booking " + ref + " on " + bkDateLabel + ".";
         document.getElementById("bkDoneText").href = "sms:09472257991?&body=" + encodeURIComponent(msg);
+
+        document.getElementById("bkMailNote").hidden = !bkUsedScript;
 
         document.getElementById("bkTestNote").textContent = isLocal
             ? "TEST MODE: this booking was not sent (you're on your computer, or the Web3Forms key isn't added yet)."
@@ -2902,12 +2870,19 @@
         btn.disabled = true;
         btn.textContent = "Uploading...";
 
-        var test = isLocalHost() || PAYMENT_UPLOAD_URL.indexOf("PASTE") === 0;
+        var test = isLocalHost();
+        if (!test && PAYMENT_UPLOAD_URL.indexOf("PASTE") === 0) {
+            err.textContent = "Online upload isn't ready yet. Please send your screenshot to us on Messenger with your booking number.";
+            btn.disabled = false;
+            btn.textContent = "Upload proof of payment";
+            return;
+        }
 
         shrinkImage(proofFile).then(function (data) {
             if (test) return { ok: true };
             var payload = {};
             Object.keys(lastBooking).forEach(function (k) { payload[k] = lastBooking[k]; });
+            payload.action = "proof";
             payload.mimeType = "image/jpeg";
             payload.data = data;
             // sent as plain text so Google accepts it from your website
@@ -2918,7 +2893,7 @@
             if (!res || !res.ok) throw new Error((res && res.error) || "Upload failed");
             document.getElementById("bkDoneEmail").textContent = lastBooking.email;
             document.getElementById("proofTestNote").textContent = test
-                ? "TEST MODE: the screenshot was not uploaded (you're on your computer, or the upload link isn't added yet)."
+                ? "TEST MODE: the screenshot was not uploaded because you're testing on your computer."
                 : "";
             document.getElementById("proofBox").hidden = true;
             document.getElementById("proofOk").hidden = false;
@@ -3043,44 +3018,6 @@
             box.appendChild(card);
         });
         document.getElementById("reviewEmpty").hidden = REVIEWS.length > 0;
-    })();
-
-    // ===== MY PHOTOS (EVENT PHOTO FINDER) =====
-    // EDIT: after each event, add a code and the Google Drive folder link of its photos.
-    // Copy the example line, remove the // at the start, and change the details.
-    // Tip: set the Drive folder to "Anyone with the link can view".
-    var EVENTS = {
-        // "ELLA18": { name: "Ella's 18th Birthday", date: "Nov 15, 2026", link: "https://drive.google.com/your-folder-link" }
-    };
-
-    (function () {
-        var lookup = {};
-        Object.keys(EVENTS).forEach(function (k) {
-            lookup[k.toUpperCase().replace(/\s+/g, "")] = EVENTS[k];
-        });
-
-        document.getElementById("finderForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            var code = document.getElementById("finderCode").value.toUpperCase().replace(/\s+/g, "");
-            var msg = document.getElementById("finderMsg");
-            var result = document.getElementById("finderResult");
-            result.hidden = true;
-            msg.textContent = "";
-
-            if (!code) {
-                msg.textContent = "Please enter your event code.";
-                return;
-            }
-            var ev = lookup[code];
-            if (!ev) {
-                msg.textContent = "We couldn't find that code. Double-check it, or message us and we'll help.";
-                return;
-            }
-            document.getElementById("frName").textContent = ev.name || "";
-            document.getElementById("frDate").textContent = ev.date || "";
-            document.getElementById("frLink").href = ev.link || "#";
-            result.hidden = false;
-        });
     })();
 
     // ===== GIFT CARDS =====
