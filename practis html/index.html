@@ -1353,10 +1353,351 @@
         .float-book { font-size: 20px; padding: 6px 14px; right: 12px; }
         .gift-pkg { font-size: 36px; }
     }
+
+    /* =====================================================
+       KLX RECEIPT PHOTOBOOTH LOOK
+       thermal printer, photo strips, camera flash
+       Want the old light gray background back? Change --table to #cfcfcf
+       ===================================================== */
+    :root {
+        --table: #1d1d1d;
+        --paper: #fdfcf7;
+        --ink: #161616;
+    }
+
+    body {
+        background-color: var(--table);
+        background-image:
+            radial-gradient(ellipse at 50% -10%, rgba(255, 255, 255, 0.12), transparent 60%),
+            radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+        background-size: 100% 100%, 18px 18px;
+        background-attachment: fixed;
+    }
+
+    /* thermal paper: faint print lines and a deeper shadow */
+    .paper {
+        background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0 1px, transparent 1px 4px);
+        filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.5));
+    }
+
+    /* torn receipt edges (zigzag teeth on top and bottom) */
+    .paper::before,
+    .paper::after {
+        height: 8px;
+        background-size: 16px 8px;
+        background-repeat: repeat-x;
+    }
+
+    .paper::before {
+        top: -8px;
+        background-image: conic-gradient(from 135deg at 50% 0, var(--paper) 90deg, transparent 0);
+        background-position: 0 0;
+    }
+
+    .paper::after {
+        bottom: -8px;
+        background-image: conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, transparent 0);
+        background-position: 0 0;
+    }
+
+    /* thermal ink: big text looks slightly "burned" into the paper */
+    h1, h2, .menu-head, .rate-price, .pay-amount, .bk-ref, .step-num {
+        text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ----- the printer above the main receipt ----- */
+    .print-col {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+    }
+
+    .print-col .main {
+        margin-top: -14px;
+        z-index: 1;
+    }
+
+    .printer {
+        position: relative;
+        z-index: 2;
+        height: 60px;
+        margin: 0 -16px;
+        padding: 0 20px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: linear-gradient(#2e2e2e, #0c0c0c);
+        border-radius: 12px 12px 6px 6px;
+        box-shadow: 0 6px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        color: #c9c9c9;
+        font-family: var(--display);
+        font-size: 20px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .printer-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .printer-led {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #3c3c3c;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .printer-status::after {
+        content: "READY";
+    }
+
+    .is-printing .printer-status::after {
+        content: "PRINTING...";
+    }
+
+    .is-printing .printer-led {
+        background-color: #ffffff;
+        box-shadow: 0 0 10px #ffffff;
+        animation: led-blink 0.25s steps(2) infinite;
+    }
+
+    .printer-slot {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 8px;
+        height: 8px;
+        background-color: #000;
+        border-radius: 4px;
+        box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes led-blink {
+        50% { opacity: 0.2; }
+    }
+
+    /* each section "prints" out line by line when you open it */
+    .page.printing {
+        animation: print-out 0.9s steps(14, end) both;
+    }
+
+    @keyframes print-out {
+        from { clip-path: inset(0 0 100% 0); transform: translateY(-18px); }
+        to   { clip-path: inset(0 0 0 0); transform: none; }
+    }
+
+    /* camera flash when you tap the menu */
+    .flash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background-color: #ffffff;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .flash.go {
+        animation: flash 0.45s ease-out;
+    }
+
+    @keyframes flash {
+        0% { opacity: 0.85; }
+        100% { opacity: 0; }
+    }
+
+    /* receipt header: date, time, order number */
+    .rc-meta {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 4px 14px;
+        margin-top: 12px;
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--faded);
+    }
+
+    .rc-meta b {
+        color: var(--ink);
+    }
+
+    /* ----- photos hang like real receipt strips on binder clips ----- */
+    .gallery {
+        gap: 40px 24px;
+        padding-top: 14px;
+    }
+
+    .gallery figure {
+        position: relative;
+        background-color: #ffffff;
+        padding: 10px 10px 12px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+        transform: rotate(-1.4deg);
+        transform-origin: 50% 0;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .gallery figure:nth-child(even) {
+        transform: rotate(1.2deg);
+    }
+
+    .gallery figure:nth-child(3n) {
+        transform: rotate(-0.5deg);
+    }
+
+    .gallery figure:hover {
+        transform: rotate(0deg) translateY(-4px);
+        box-shadow: 0 16px 26px rgba(0, 0, 0, 0.28);
+    }
+
+    /* binder clip: black body */
+    .gallery figure::before {
+        content: "";
+        position: absolute;
+        top: -9px;
+        left: 50%;
+        width: 26px;
+        height: 14px;
+        margin-left: -13px;
+        z-index: 2;
+        background: linear-gradient(#3a3a3a, #0e0e0e);
+        border-radius: 3px 3px 2px 2px;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+    }
+
+    /* binder clip: wire handle */
+    .gallery figure::after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        width: 16px;
+        height: 14px;
+        margin-left: -8px;
+        z-index: 1;
+        border: 2px solid #8d8d8d;
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .gallery figcaption {
+        margin-top: 10px;
+        padding-top: 6px;
+        border-top: 1px dashed var(--faded);
+        font-size: 11px;
+    }
+
+    .home-strips {
+        max-width: 460px;
+        margin: 0 auto;
+    }
+
+    .home-strips img {
+        height: 250px;
+    }
+
+    .rate-card {
+        transition: transform 0.2s ease;
+    }
+
+    .rate-card:hover {
+        transform: translateY(-3px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .page.printing,
+        .flash.go,
+        .is-printing .printer-led {
+            animation: none;
+        }
+        .gallery figure,
+        .rate-card {
+            transition: none;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .printer {
+            margin: 0 -6px;
+            height: 52px;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+        .gallery {
+            gap: 36px 16px;
+        }
+        .home-strips img {
+            height: 200px;
+        }
+    }
+
+    /* =====================================================
+       RECEIPT CURSOR
+       mouse = mini receipt, over buttons = camera,
+       every click or tap prints a tiny receipt
+       ===================================================== */
+    @media (hover: hover) and (pointer: fine) {
+        html {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='30' viewBox='0 0 24 30'%3E%3Cpath d='M2 1h18v24l-3-2-3 2-3-2-3 2-3-2-3 2z' fill='%23fdfcf7' stroke='%23111' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M5 6h12M5 10h9M5 14h12M5 18h7' stroke='%23111' stroke-width='1.6'/%3E%3C/svg%3E") 2 1, auto;
+        }
+        a, button, label, summary, select, .cal-cell, [onclick] {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='26' viewBox='0 0 30 26'%3E%3Cpath d='M10 7l2-4h6l2 4' fill='%23111' stroke='%23fdfcf7' stroke-width='1.5' stroke-linejoin='round'/%3E%3Crect x='2' y='7' width='26' height='17' rx='3' fill='%23111' stroke='%23fdfcf7' stroke-width='1.5'/%3E%3Ccircle cx='15' cy='15.5' r='5.2' fill='%23fdfcf7'/%3E%3Ccircle cx='15' cy='15.5' r='2.6' fill='%23111'/%3E%3Ccircle cx='23.5' cy='11' r='1.2' fill='%23fdfcf7'/%3E%3C/svg%3E") 15 15, pointer !important;
+        }
+        button:disabled,
+        .cal-cell.past,
+        .cal-cell.booked {
+            cursor: not-allowed !important;
+        }
+        input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+        textarea {
+            cursor: text;
+        }
+    }
+
+    .mini-receipt {
+        position: fixed;
+        z-index: 101;
+        width: 26px;
+        height: 34px;
+        margin: 8px 0 0 -13px;
+        padding: 6px 5px 4px;
+        pointer-events: none;
+        background-color: var(--paper);
+        background-image: repeating-linear-gradient(180deg, transparent 0 5px, rgba(0, 0, 0, 0.7) 5px 6px);
+        background-clip: content-box;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+        animation: mini-print 0.9s ease-in forwards;
+    }
+
+    .mini-receipt::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -4px;
+        height: 4px;
+        background: conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, transparent 0) 0 0 / 8px 4px repeat-x;
+    }
+
+    @keyframes mini-print {
+        0%   { clip-path: inset(0 0 100% 0); transform: none; opacity: 1; }
+        35%  { clip-path: inset(0 0 -6px 0); transform: none; opacity: 1; }
+        100% { clip-path: inset(0 0 -6px 0); transform: translateY(34px) rotate(14deg); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .mini-receipt { display: none; }
+    }
     </style>
 </head>
 
 <body>
+
+<div class="flash" id="flash" aria-hidden="true"></div>
 
 <div class="layout">
 
@@ -1368,7 +1709,7 @@
 
         <div class="menu-list">
             <button onclick="showPage('home', this)" class="active"><span class="num">01</span><span class="label">Home</span><span class="leader"></span><span class="mark">*</span></button>
-            <button onclick="showPage('photos', this)"><span class="num">02</span><span class="label">Photos</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('photos', this)" id="navPhotos"><span class="num">02</span><span class="label">Photos</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('howto', this)"><span class="num">03</span><span class="label">How to Use</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('videos', this)"><span class="num">04</span><span class="label">Videos</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('rates', this)"><span class="num">05</span><span class="label">Rates</span><span class="leader"></span><span class="mark"></span></button>
@@ -1386,9 +1727,20 @@
     </nav>
 
     <!-- ===== MAIN RECEIPT ===== -->
+    <div class="print-col">
+    <div class="printer" aria-hidden="true">
+        <span class="printer-brand"><span class="printer-led"></span>KLX</span>
+        <span class="printer-status"></span>
+        <span class="printer-slot"></span>
+    </div>
     <main class="main paper">
 
         <img src="KLX BUSINESS CARD.jpg" alt="KLX Receipt Photobooth logo" class="logo">
+        <div class="rc-meta" aria-hidden="true">
+            <span>DATE <b id="rcDate"></b></span>
+            <span>TIME <b id="rcTime"></b></span>
+            <span>ORDER <b id="rcNo">KLX-01</b></span>
+        </div>
         <hr class="dash">
 
         <!-- PROMO COUNTDOWN (edit the end date in the script: search PROMO_END) -->
@@ -1413,6 +1765,21 @@
                 <div class="line"><span>MEMORIES</span><span class="leader"></span><span>UNLIMITED</span></div>
                 <div class="line total"><span>TOTAL</span><span class="leader"></span><span>SMILES</span></div>
             </div>
+
+            <hr class="dash">
+            <h2 class="center">Fresh Prints</h2>
+            <p class="small center">STRAIGHT OUT OF THE BOOTH</p>
+            <div class="gallery home-strips">
+                <figure>
+                    <img src="photos/sample colored.jpg" alt="KLX sample print in color">
+                    <figcaption>ITEM 01 / COLORED</figcaption>
+                </figure>
+                <figure>
+                    <img src="photos/sample black and white.jpg" alt="KLX sample print in black and white">
+                    <figcaption>ITEM 02 / B&amp;W</figcaption>
+                </figure>
+            </div>
+            <button type="button" class="pz-btn dark bk-submit" onclick="showPage('photos', document.getElementById('navPhotos'))">See more prints</button>
 
             <!-- KLX SO FAR (edit the numbers in the script: search STATS) -->
             <div id="statsWrap" hidden>
@@ -2170,6 +2537,7 @@
         <p class="small center">*** THANK YOU FOR CHOOSING KLX ***<br>KLX RECEIPT PHOTOBOOTH / ILIGAN CITY</p>
 
     </main>
+    </div>
 
 </div>
 
@@ -2177,12 +2545,47 @@
 <button type="button" class="float-book" id="floatBook" onclick="goToBooking()">Book now</button>
 
 <script>
+    // ===== RECEIPT PRINTER EFFECTS (flash, print-out, receipt header) =====
+    var klxReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var klxTimer = null;
+
+    function klxPrint(page, flash) {
+        if (!page || klxReduce) return;
+        var col = document.querySelector(".print-col");
+        if (flash) {
+            var f = document.getElementById("flash");
+            f.classList.remove("go");
+            void f.offsetWidth;
+            f.classList.add("go");
+        }
+        page.classList.remove("printing");
+        void page.offsetWidth;
+        page.classList.add("printing");
+        col.classList.add("is-printing");
+        clearTimeout(klxTimer);
+        klxTimer = setTimeout(function () {
+            page.classList.remove("printing");
+            col.classList.remove("is-printing");
+        }, 1000);
+    }
+
+    function klxMeta(button) {
+        var d = new Date();
+        document.getElementById("rcDate").textContent =
+            d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+        document.getElementById("rcTime").textContent =
+            d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+        var num = button && button.querySelector && button.querySelector(".num");
+        if (num) document.getElementById("rcNo").textContent = "KLX-" + num.textContent;
+    }
     // Switch between Home, Photos, and the other sections
     function showPage(pageId, button) {
         document.querySelectorAll('.page').forEach(function (page) {
             page.classList.remove('show');
         });
         document.getElementById(pageId).classList.add('show');
+        klxPrint(document.getElementById(pageId), true);
+        klxMeta(button);
 
         document.querySelectorAll('.sidebar button').forEach(function (btn) {
             btn.classList.remove('active');
@@ -3465,6 +3868,22 @@
     }
 
     pzLoadLogo();
+
+    // print the Home page when the site opens
+    klxMeta(document.querySelector(".sidebar button.active"));
+    setInterval(function () { klxMeta(); }, 30000);
+    klxPrint(document.getElementById("home"), false);
+
+    // every click or tap prints a tiny receipt
+    document.addEventListener("pointerdown", function (e) {
+        if (klxReduce || document.querySelectorAll(".mini-receipt").length > 5) return;
+        var m = document.createElement("div");
+        m.className = "mini-receipt";
+        m.style.left = e.clientX + "px";
+        m.style.top = e.clientY + "px";
+        document.body.appendChild(m);
+        m.addEventListener("animationend", function () { m.remove(); });
+    });
 </script>
 
 </body>
