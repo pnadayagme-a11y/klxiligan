@@ -1692,12 +1692,69 @@
     @media (prefers-reduced-motion: reduce) {
         .mini-receipt { display: none; }
     }
+
+    /* =====================================================
+       BACKGROUND: a table covered in KLX prints
+       plus receipts slowly drifting down
+       ===================================================== */
+    body {
+        background-image:
+            radial-gradient(ellipse at 50% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
+            radial-gradient(ellipse at 50% 120%, rgba(0, 0, 0, 0.6), transparent 60%),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg transform='translate%2840 50%29 rotate%28-12%29'%3E%3Cpath d='M0 0h62v110l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5l-3.1-5l-3.1 5z' fill='%23fdfcf7' fill-opacity='.07'/%3E%3Cg fill='%23000' fill-opacity='.35'%3E%3Crect x='8' y='14' width='46' height='3'/%3E%3Crect x='8' y='26' width='27' height='3'/%3E%3Crect x='8' y='38' width='46' height='3'/%3E%3Crect x='8' y='50' width='46' height='3'/%3E%3Crect x='8' y='62' width='27' height='3'/%3E%3Crect x='8' y='74' width='46' height='3'/%3E%3Crect x='8' y='86' width='46' height='3'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%28330 30%29 rotate%289%29'%3E%3Crect width='46' height='150' fill='%23fdfcf7' fill-opacity='.08'/%3E%3Cg fill='%23000' fill-opacity='.4'%3E%3Crect x='5' y='5' width='36' height='36' rx='1'/%3E%3Crect x='5' y='47' width='36' height='36' rx='1'/%3E%3Crect x='5' y='89' width='36' height='36' rx='1'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%28200 270%29 rotate%287%29'%3E%3Cpath d='M0 0h72v128l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5z' fill='%23fdfcf7' fill-opacity='.07'/%3E%3Cg fill='%23000' fill-opacity='.35'%3E%3Crect x='8' y='14' width='56' height='3'/%3E%3Crect x='8' y='26' width='33' height='3'/%3E%3Crect x='8' y='38' width='56' height='3'/%3E%3Crect x='8' y='50' width='56' height='3'/%3E%3Crect x='8' y='62' width='33' height='3'/%3E%3Crect x='8' y='74' width='56' height='3'/%3E%3Crect x='8' y='86' width='56' height='3'/%3E%3Crect x='8' y='98' width='33' height='3'/%3E%3Crect x='8' y='110' width='56' height='3'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%2860 320%29 rotate%28-7%29'%3E%3Crect width='46' height='150' fill='%23fdfcf7' fill-opacity='.08'/%3E%3Cg fill='%23000' fill-opacity='.4'%3E%3Crect x='5' y='5' width='36' height='36' rx='1'/%3E%3Crect x='5' y='47' width='36' height='36' rx='1'/%3E%3Crect x='5' y='89' width='36' height='36' rx='1'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%28400 300%29 rotate%28-18%29'%3E%3Cpath d='M0 0h54v90l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5l-3.0-5l-3.0 5z' fill='%23fdfcf7' fill-opacity='.07'/%3E%3Cg fill='%23000' fill-opacity='.35'%3E%3Crect x='8' y='14' width='38' height='3'/%3E%3Crect x='8' y='26' width='22' height='3'/%3E%3Crect x='8' y='38' width='38' height='3'/%3E%3Crect x='8' y='50' width='38' height='3'/%3E%3Crect x='8' y='62' width='22' height='3'/%3E%3C/g%3E%3C/g%3E%3Cg transform='translate%28250 40%29 rotate%284%29'%3E%3Cpath d='M0 0h44v70l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5l-3.142857142857143-5l-3.142857142857143 5z' fill='%23fdfcf7' fill-opacity='.07'/%3E%3Cg fill='%23000' fill-opacity='.35'%3E%3Crect x='8' y='14' width='28' height='3'/%3E%3Crect x='8' y='26' width='16' height='3'/%3E%3Crect x='8' y='38' width='28' height='3'/%3E%3Crect x='8' y='50' width='28' height='3'/%3E%3C/g%3E%3C/g%3E%3Ctext x='150' y='215' transform='rotate%28-8 150 215%29' font-family='monospace' font-size='44' font-weight='bold' letter-spacing='10' fill='%23fdfcf7' fill-opacity='.05'%3EKLX%3C/text%3E%3C/svg%3E");
+        background-size: 100% 100%, 100% 100%, 520px 520px;
+        background-attachment: fixed;
+    }
+
+    .layout {
+        position: relative;
+        z-index: 1;
+    }
+
+    .bg-rain {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .bg-receipt {
+        position: absolute;
+        top: -160px;
+        padding: 10px 8px 6px;
+        background-color: var(--paper);
+        background-image: repeating-linear-gradient(180deg, transparent 0 7px, rgba(0, 0, 0, 0.55) 7px 9px);
+        background-clip: content-box;
+        opacity: 0.13;
+        animation: bg-fall linear infinite;
+    }
+
+    .bg-receipt::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 6px;
+        background: conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, transparent 0) 0 0 / 12px 6px repeat-x;
+    }
+
+    @keyframes bg-fall {
+        from { transform: translateY(0) rotate(var(--r1)); }
+        to   { transform: translateY(calc(100vh + 320px)) rotate(var(--r2)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .bg-rain { display: none; }
+    }
     </style>
 </head>
 
 <body>
 
 <div class="flash" id="flash" aria-hidden="true"></div>
+<div class="bg-rain" id="bgRain" aria-hidden="true"></div>
 
 <div class="layout">
 
@@ -3884,6 +3941,27 @@
         document.body.appendChild(m);
         m.addEventListener("animationend", function () { m.remove(); });
     });
+
+    // receipts slowly drifting down the background
+    (function () {
+        if (klxReduce) return;
+        var box = document.getElementById("bgRain");
+        var count = window.innerWidth < 760 ? 4 : 8;
+        for (var i = 0; i < count; i++) {
+            var r = document.createElement("div");
+            r.className = "bg-receipt";
+            var w = 34 + Math.round(Math.random() * 30);
+            r.style.width = w + "px";
+            r.style.height = Math.round(w * (1.6 + Math.random() * 0.8)) + "px";
+            r.style.left = (i / count * 100 + Math.random() * (100 / count)) + "%";
+            r.style.setProperty("--r1", (Math.random() * 60 - 30) + "deg");
+            r.style.setProperty("--r2", (Math.random() * 300 - 150) + "deg");
+            var dur = 22 + Math.random() * 18;
+            r.style.animationDuration = dur + "s";
+            r.style.animationDelay = (-Math.random() * dur) + "s";
+            box.appendChild(r);
+        }
+    })();
 </script>
 
 </body>
