@@ -1776,6 +1776,7 @@
             <button onclick="showPage('gifts', this)"><span class="num">09</span><span class="label">Gift Cards</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('contact', this)"><span class="num">10</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('games', this)"><span class="num">11</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('myphotos', this)"><span class="num">12</span><span class="label">My Photos</span><span class="leader"></span><span class="mark"></span></button>
         </div>
 
         <hr class="dash">
@@ -2364,6 +2365,10 @@
                     <summary>Can I change my date?</summary>
                     <p>Message us as early as possible and we'll check which dates are still open for you.</p>
                 </details>
+                <details>
+                    <summary>How do we get our event photos?</summary>
+                    <p>After your event, we'll give you a voucher code. Go to My Photos, type in your code, and it will open the folder with all your event photos.</p>
+                </details>
             </div>
 
             <hr class="dash">
@@ -2586,6 +2591,27 @@
                 </div>
                 <p class="bk-hint center">Post it and tag us @klxiligan!</p>
             </div>
+        </section>
+
+        <!-- MY PHOTOS (voucher code opens the client's Google Drive folder) -->
+        <section id="myphotos" class="page">
+            <h1>My Photos</h1>
+            <p class="small center">ENTER YOUR VOUCHER CODE TO GET YOUR EVENT PHOTOS</p>
+            <hr class="dash">
+
+            <form class="bk" id="vcForm" novalidate>
+                <div class="bk-field">
+                    <label for="vcCode">Voucher code</label>
+                    <input type="text" id="vcCode" autocomplete="off" placeholder="e.g. KLX-1024-4821" style="text-transform: uppercase;">
+                    <p class="bk-hint">Your code is on your KLX voucher or was sent to you after your event.</p>
+                </div>
+                <p class="bk-error" id="vcError" role="alert"></p>
+                <button type="submit" class="pz-btn dark bk-submit" id="vcSubmit">Get my photos</button>
+            </form>
+
+            <hr class="dash">
+            <p class="book-note">Lost your code?<br>
+                <a href="https://m.me/KLXreceiptPhotobooth" target="_blank"><b>Message us on Messenger</b></a></p>
         </section>
 
         <!-- RECEIPT FOOTER -->
@@ -3925,6 +3951,39 @@
     }
 
     pzLoadLogo();
+
+    // ===== MY PHOTOS (voucher codes) =====
+    // The codes and Drive links live in your Google Sheet (tab "Vouchers"),
+    // and your Apps Script (PAYMENT_UPLOAD_URL) checks them, so they stay private.
+    document.getElementById("vcForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var code = document.getElementById("vcCode").value.trim().toUpperCase();
+        var err = document.getElementById("vcError");
+        var btn = document.getElementById("vcSubmit");
+        err.textContent = "";
+
+        if (!code) {
+            err.textContent = "Please type your voucher code.";
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Checking...";
+
+        // sent as plain text so Google accepts it from your website
+        fetch(PAYMENT_UPLOAD_URL, { method: "POST", body: JSON.stringify({ action: "photos", code: code }) })
+            .then(function (res) { return res.json(); })
+            .then(function (d) {
+                if (!d || !d.ok || !d.link) throw new Error("not found");
+                btn.textContent = "Opening your photos...";
+                window.location.href = d.link;
+            })
+            .catch(function () {
+                err.textContent = "Sorry, we couldn't find that code. Please check it and try again, or message us.";
+                btn.disabled = false;
+                btn.textContent = "Get my photos";
+            });
+    });
 
     // print the Home page when the site opens
     klxMeta(document.querySelector(".sidebar button.active"));
