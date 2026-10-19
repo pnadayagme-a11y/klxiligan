@@ -11,8 +11,8 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="KLX Receipt Photobooth | Iligan City">
     <meta property="og:description" content="Photos printed like receipts, a memory you can hold. Check our rates and book your date online.">
-    <meta property="og:image" content="https://klxiligan.vercel.app/KLX%20BUSINESS%20CARD.jpg">
-    <meta property="og:url" content="https://klxiligan.vercel.app/">
+    <meta property="og:image" content="https://klxphotobooth.space/KLX%20BUSINESS%20CARD.jpg">
+    <meta property="og:url" content="https://klxphotobooth.space/">
 
     <!-- BROWSER TAB ICON -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='24' font-weight='bold' fill='%23fff' text-anchor='middle'%3EKLX%3C/text%3E%3C/svg%3E">
@@ -1776,7 +1776,7 @@
             <button onclick="showPage('gifts', this)"><span class="num">09</span><span class="label">Gift Cards</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('contact', this)"><span class="num">10</span><span class="label">Contact</span><span class="leader"></span><span class="mark"></span></button>
             <button onclick="showPage('games', this)"><span class="num">11</span><span class="label">Games</span><span class="leader"></span><span class="mark"></span></button>
-            <button onclick="showPage('myphotos', this)"><span class="num">12</span><span class="label">My Photos</span><span class="leader"></span><span class="mark"></span></button>
+            <button onclick="showPage('myphotos', this)" id="navMyPhotos"><span class="num">12</span><span class="label">My Photos</span><span class="leader"></span><span class="mark"></span></button>
         </div>
 
         <hr class="dash">
@@ -3989,6 +3989,22 @@
     klxMeta(document.querySelector(".sidebar button.active"));
     setInterval(function () { klxMeta(); }, 30000);
     klxPrint(document.getElementById("home"), false);
+
+    // ===== DIRECT LINKS TO A SECTION =====
+    // klxphotobooth.space/#myphotos opens My Photos right away.
+    // Works for any section too, like #rates, #availability, #faq or #gifts.
+    (function () {
+        var id = (location.hash || "").replace("#", "").toLowerCase();
+        if (!id || id === "home") return;
+        var page = document.getElementById(id);
+        if (!page || !page.classList.contains("page")) return;
+        var btn = document.querySelector(".sidebar button[onclick*=\"'" + id + "'\"]");
+        if (!btn) return;
+        showPage(id, btn);
+        if (id === "myphotos") {
+            setTimeout(function () { document.getElementById("vcCode").focus({ preventScroll: true }); }, 500);
+        }
+    })();
 
     // every click or tap prints a tiny receipt
     document.addEventListener("pointerdown", function (e) {
