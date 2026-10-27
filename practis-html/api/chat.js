@@ -2,7 +2,13 @@
 // Lives at /api/chat on your site. The API key stays here (server side), never in the browser.
 // Needs env var GEMINI_API_KEY in Vercel. Optional: GEMINI_MODEL.
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
+// Models to try in order. If one is busy (503) or rate limited (429), the next one is tried.
+const MODELS = [
+  process.env.GEMINI_MODEL,
+  "gemini-flash-latest",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash",
+].filter(Boolean);
 
 // ====== EDIT THESE ======
 const BOOKING_URL = "https://klxphotobooth.space"; // change to your exact booking page link
@@ -83,23 +89,37 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "No user message" });
     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents,
-          generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
-        }),
-      }
-    );
+    const payload = JSON.stringify({
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents,
+      generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
+    });
 
-    const data = await response.json();
-    if (!response.ok) {
-      console.error("Gemini error:", JSON.stringify(data));
-      return res.status(502).json({ error: "AI request failed" });
+    let data = null;
+    for (const model of MODELS) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+          body: payload,
+        }
+      );
+      const result = await response.json();
+      if (response.ok) {
+        data = result;
+        break;
+      }
+      console.error(`Gemini error (${model}):`, JSON.stringify(result));
+      // Busy, rate limited, or model not available: try the next model
+      if (![429, 500, 503, 404].includes(response.status)) break;
+    }
+
+    if (!data) {
+      return res.status(200).json({
+        reply:
+          "Sorry po, busy kaayo ang among system karon. Please try again in a minute, or contact us at 09472257991 or 09351265931.",
+      });
     }
 
     const reply =
