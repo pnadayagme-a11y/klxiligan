@@ -5,9 +5,10 @@
 // Models to try in order. If one is busy (503) or rate limited (429), the next one is tried.
 const MODELS = [
   process.env.GEMINI_MODEL,
+  "gemini-3.1-flash-lite",
+  "gemini-flash-lite-latest",
   "gemini-flash-latest",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-flash",
+  "gemini-3.8-flash",
 ].filter(Boolean);
 
 // ====== EDIT THESE ======
