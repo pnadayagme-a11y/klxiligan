@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Halloween Party Photobooth | KLX Iligan City</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Trick or receipt! Book KLX Receipt Photobooth for your Halloween party in Iligan City. Unlimited sessions, spooky layouts, instant receipt prints.">
+
+    <!-- LINK PREVIEW (how this page looks when shared on Facebook / Messenger) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Trick or Receipt! KLX Halloween Photobooth">
+    <meta property="og:description" content="Spooky layouts, unlimited sessions, instant receipt prints. Book KLX for your Halloween party in Iligan City.">
+    <meta property="og:image" content="https://klxphotobooth.space/KLX%20BUSINESS%20CARD.jpg">
+    <meta property="og:url" content="https://klxphotobooth.space/halloween">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='24' font-weight='bold' fill='%23fff' text-anchor='middle'%3EKLX%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+    /* ===== COLORS AND FONTS (same as the main KLX site) ===== */
+    :root {
+        --table: #1d1d1d;
+        --paper: #fdfcf7;
+        --ink: #161616;
+        --faded: #6b6b6b;
+        --pumpkin: #ff7a1a;   /* Halloween accent, used only a little */
+        --display: 'VT323', 'Courier New', monospace;
+        --body: 'Space Mono', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 15px;
+        line-height: 1.7;
+        overflow-x: hidden;
+        background-color: var(--table);
+        background-image:
+            radial-gradient(ellipse at 50% -10%, rgba(255, 122, 26, 0.16), transparent 55%),
+            radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+        background-size: 100% 100%, 18px 18px;
+        background-attachment: fixed;
+    }
+
+    /* ===== PAGE LAYOUT ===== */
+    .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 18px 110px;
+    }
+
+    /* ===== RECEIPT PAPER ===== */
+    .paper {
+        position: relative;
+        background-color: var(--paper);
+        background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0 1px, transparent 1px 4px);
+        filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.5));
+    }
+    .paper::before,
+    .paper::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background-size: 16px 8px;
+        background-repeat: repeat-x;
+    }
+    .paper::before {
+        top: -8px;
+        background-image: conic-gradient(from 135deg at 50% 0, var(--paper) 90deg, transparent 0);
+    }
+    .paper::after {
+        bottom: -8px;
+        background-image: conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, transparent 0);
+    }
+
+    .main { padding: 36px 44px 44px; margin-top: -14px; }
+
+    .dash { border: 0; border-top: 2px dashed var(--ink); margin: 22px 0; }
+    .small { font-size: 11px; letter-spacing: 2px; }
+    .center { text-align: center; }
+
+    h1, h2 {
+        font-family: var(--display);
+        font-weight: 400;
+        line-height: 1;
+        text-transform: uppercase;
+        text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+    }
+    h1 { font-size: 72px; text-align: center; margin: 8px 0 4px; }
+    h2 { font-size: 38px; text-align: center; margin: 0 0 6px; }
+
+    .barcode {
+        height: 46px;
+        width: 80%;
+        max-width: 320px;
+        margin: 8px auto;
+        background: repeating-linear-gradient(90deg,
+            var(--ink) 0 3px, transparent 3px 5px, var(--ink) 5px 6px, transparent 6px 9px,
+            var(--ink) 9px 13px, transparent 13px 15px, var(--ink) 15px 16px, transparent 16px 19px);
+    }
+
+    /* receipt line with dotted leader: LABEL ........ VALUE */
+    .line { display: flex; align-items: baseline; gap: 8px; margin: 6px 0; }
+    .line .leader { flex: 1; border-bottom: 2px dotted var(--faded); transform: translateY(-4px); }
+    .line.total { font-weight: 700; font-size: 18px; }
+    .lines { max-width: 440px; margin: 0 auto; }
+
+    /* ===== PRINTER ON TOP ===== */
+    .printer {
+        position: relative;
+        z-index: 2;
+        height: 60px;
+        margin: 0 -16px;
+        padding: 0 20px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: linear-gradient(#2e2e2e, #0c0c0c);
+        border-radius: 12px 12px 6px 6px;
+        box-shadow: 0 6px 0 #000, inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        color: #c9c9c9;
+        font-family: var(--display);
+        font-size: 20px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+    .printer a { color: inherit; text-decoration: none; }
+    .printer-brand { display: flex; align-items: center; gap: 10px; }
+    .printer-led {
+        width: 10px; height: 10px; border-radius: 50%;
+        background-color: var(--pumpkin);
+        box-shadow: 0 0 10px var(--pumpkin);
+        animation: led-blink 1.2s steps(2) infinite;
+    }
+    .printer-slot {
+        position: absolute; left: 12px; right: 12px; bottom: 8px; height: 8px;
+        background-color: #000; border-radius: 4px;
+        box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    @keyframes led-blink { 50% { opacity: 0.25; } }
+
+    /* receipt prints out when the page opens */
+    .main { animation: print-out 1.1s steps(16, end) both; }
+    @keyframes print-out {
+        from { clip-path: inset(0 0 100% 0); transform: translateY(-18px); }
+        to   { clip-path: inset(0 0 -20px 0); transform: none; }
+    }
+
+    .logo-head { font-family: var(--display); font-size: 56px; letter-spacing: 10px; line-height: 1; text-align: center; }
+    .rc-meta {
+        display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px;
+        margin-top: 12px; font-size: 11px; letter-spacing: 1px; color: var(--faded);
+    }
+    .rc-meta b { color: var(--ink); }
+
+    /* ===== PROMO COUNTDOWN STRIP ===== */
+    .promo-strip {
+        background-color: var(--ink);
+        color: var(--paper);
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 1px;
+        padding: 8px 10px;
+        margin: -6px 0 18px;
+    }
+    .promo-strip[hidden] { display: none; }
+    .promo-strip b {
+        font-family: var(--display); font-weight: 400; font-size: 22px; letter-spacing: 2px;
+        margin: 0 4px; color: var(--pumpkin);
+    }
+
+    /* ===== HERO ===== */
+    .kicker { text-align: center; font-size: 13px; letter-spacing: 3px; margin: 0; }
+    .kicker span { color: var(--pumpkin); }
+    .lead { text-align: center; font-size: 16px; max-width: 520px; margin: 12px auto 0; }
+
+    /* ===== BUTTONS (same style as the main site) ===== */
+    .btn {
+        display: block;
+        font-family: var(--display);
+        font-size: 26px;
+        letter-spacing: 2px;
+        line-height: 1.2;
+        text-transform: uppercase;
+        text-align: center;
+        text-decoration: none;
+        padding: 10px 12px;
+        border: 2px solid var(--ink);
+        background-color: var(--paper);
+        color: var(--ink);
+        cursor: pointer;
+    }
+    .btn.dark { background-color: var(--ink); color: var(--paper); }
+    .btn:hover { opacity: 0.85; }
+    .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+
+    /* ===== SPOOKY LAYOUTS: hanging receipt strips ===== */
+    .strips {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 34px 18px;
+        padding-top: 16px;
+        margin-top: 20px;
+    }
+    .strip {
+        position: relative;
+        background-color: #ffffff;
+        padding: 10px 8px 10px;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+        transform: rotate(-1.6deg);
+        transform-origin: 50% 0;
+        transition: transform 0.25s ease;
+    }
+    .strip:nth-child(even) { transform: rotate(1.4deg); }
+    .strip:hover { transform: rotate(0) translateY(-4px); }
+    /* binder clip */
+    .strip::before {
+        content: ""; position: absolute; top: -9px; left: 50%; width: 26px; height: 14px; margin-left: -13px; z-index: 2;
+        background: linear-gradient(#3a3a3a, #0e0e0e); border-radius: 3px 3px 2px 2px;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+    }
+    .strip::after {
+        content: ""; position: absolute; top: -20px; left: 50%; width: 16px; height: 14px; margin-left: -8px; z-index: 1;
+        border: 2px solid #8d8d8d; border-bottom: 0; border-radius: 8px 8px 0 0;
+    }
+    .frame {
+        aspect-ratio: 1;
+        border: 2px solid var(--ink);
+        background-color: #ececec;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        margin-bottom: 6px;
+        filter: grayscale(1) contrast(1.2);
+    }
+    .strip-name {
+        font-family: var(--display);
+        font-size: 22px;
+        line-height: 1;
+        text-align: center;
+        text-transform: uppercase;
+        padding-top: 4px;
+        border-top: 1px dashed var(--faded);
+    }
+
+    /* ===== RATES (same as main site) ===== */
+    .rate-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 26px; }
+    .rate-card { position: relative; border: 2px dashed var(--ink); padding: 24px 18px 16px; }
+    .rate-card.premium { border-style: solid; }
+    .rate-tag {
+        position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+        background-color: var(--ink); color: var(--paper);
+        font-size: 11px; letter-spacing: 2px; padding: 2px 10px; white-space: nowrap;
+    }
+    .rate-price { font-family: var(--display); font-size: 64px; line-height: 1; text-align: center; margin: 4px 0 0; }
+    .rate-sub { text-align: center; margin: 2px 0 0; }
+    .rate-alt { text-align: center; font-size: 13px; margin: 6px 0 10px; min-height: 1.4em; }
+    .rate-row { border-top: 1px solid var(--ink); padding: 7px 0; font-size: 13px; line-height: 1.5; }
+    .rate-label { display: block; font-weight: 700; font-style: italic; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+    .rate-card .btn { font-size: 22px; margin-top: 12px; }
+    .rate-dp { text-align: center; font-weight: 700; font-size: 13px; letter-spacing: 1px; margin: 22px 0 0; }
+
+    /* ===== STEPS ===== */
+    .steps { max-width: 560px; margin: 0 auto; }
+    .step { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: start; padding: 14px 0; border-top: 1px dashed var(--faded); }
+    .step:first-child { border-top: 0; }
+    .step-num { font-family: var(--display); font-size: 60px; line-height: 0.9; text-align: center; }
+    .step-title { font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+    .step p { margin: 2px 0 0; font-size: 14px; }
+
+    /* ===== FAQ ===== */
+    .faq { max-width: 620px; margin: 0 auto; }
+    .faq details { border-top: 1px dashed var(--faded); padding: 10px 0; }
+    .faq details:first-child { border-top: 0; }
+    .faq summary { display: flex; gap: 10px; cursor: pointer; font-weight: 700; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::before { content: "+"; font-family: var(--display); font-size: 24px; line-height: 1; width: 14px; flex-shrink: 0; }
+    .faq details[open] summary::before { content: "-"; }
+    .faq details p { margin: 8px 0 0 24px; font-size: 14px; }
+
+    .contact a { color: var(--ink); font-weight: 700; text-decoration: none; }
+    .contact a:hover { text-decoration: underline; }
+
+    /* ===== FLOATING BOOK BUTTON ===== */
+    .float-book {
+        position: fixed;
+        right: 18px;
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+        z-index: 50;
+        font-family: var(--display);
+        font-size: 24px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-decoration: none;
+        background-color: var(--ink);
+        color: var(--paper);
+        border: 2px solid var(--paper);
+        outline: 2px solid var(--ink);
+        padding: 8px 18px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+    }
+    .float-book:hover { opacity: 0.85; }
+
+    /* ===== FLOATING BATS IN THE BACKGROUND ===== */
+    .bats { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .bat {
+        position: absolute;
+        color: #fdfcf7;
+        opacity: 0.22;
+        animation: fly linear infinite;
+    }
+    @keyframes fly {
+        from { transform: translate(-10vw, 0) rotate(-8deg); }
+        50%  { transform: translate(50vw, -40px) rotate(6deg); }
+        to   { transform: translate(110vw, 10px) rotate(-8deg); }
+    }
+
+    /* =====================================================
+       SPOOKY HERO: moonlight, fog, cobwebs, spider, flashlight
+       ===================================================== */
+    .hero {
+        position: relative;
+        z-index: 1;
+        min-height: 92vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 90px 18px 70px;
+        overflow: hidden;
+        color: var(--paper);
+        background:
+            radial-gradient(circle at 78% 18%, rgba(255, 214, 150, 0.9) 0 46px, rgba(255, 160, 60, 0.35) 47px, transparent 140px),
+            radial-gradient(ellipse at 50% 120%, rgba(255, 122, 26, 0.35), transparent 60%),
+            #0b0b0b;
+    }
+    /* flashlight: everything is dark except where the light points */
+    .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        background: radial-gradient(circle 220px at var(--lx, 50%) var(--ly, 45%), transparent 0, rgba(0, 0, 0, 0.55) 60%, rgba(0, 0, 0, 0.82) 100%);
+        transition: background 0.05s;
+    }
+    .hero > * { position: relative; z-index: 4; }
+    .hero .fog {
+        position: absolute; left: -50%; right: -50%; height: 220px; z-index: 2;
+        background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.14), transparent 65%);
+        filter: blur(12px);
+        animation: fog 18s ease-in-out infinite alternate;
+    }
+    .hero .fog.f1 { bottom: -40px; }
+    .hero .fog.f2 { bottom: 60px; opacity: 0.6; animation-duration: 26s; animation-direction: alternate-reverse; }
+    @keyframes fog { from { transform: translateX(-12%); } to { transform: translateX(12%); } }
+
+    .web { position: absolute; top: 0; width: 170px; height: 170px; z-index: 4; opacity: 0.5; }
+    .web.left { left: 0; }
+    .web.right { right: 0; transform: scaleX(-1); }
+
+    .spider { position: absolute; top: 0; left: 14%; z-index: 5; display: flex; flex-direction: column; align-items: center; animation: dangle 5s ease-in-out infinite; transform-origin: top center; }
+    .spider .thread { width: 1px; height: 120px; background: rgba(253, 252, 247, 0.6); }
+    .spider .body { font-size: 30px; line-height: 1; filter: grayscale(1) brightness(0.3) drop-shadow(0 0 4px rgba(255, 122, 26, 0.8)); }
+    @keyframes dangle { 0%, 100% { transform: translateY(-40px) rotate(2deg); } 50% { transform: translateY(30px) rotate(-3deg); } }
+
+    .hero .kicker { color: #c9c9c9; }
+    .spooky-title {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: clamp(76px, 15vw, 160px);
+        line-height: 0.85;
+        margin: 14px 0 10px;
+        color: var(--pumpkin);
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(255, 122, 26, 0.9), 0 0 34px rgba(255, 122, 26, 0.6), 0 0 80px rgba(255, 60, 0, 0.45);
+        animation: flicker 4.5s infinite;
+    }
+    .spooky-title .w { display: block; color: var(--paper); text-shadow: 0 0 12px rgba(255, 255, 255, 0.5); }
+    @keyframes flicker {
+        0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+        20%, 24%, 55% { opacity: 0.35; }
+    }
+    .hero .lead { color: #e7e5dd; }
+    .hero .btn-row { width: min(660px, 100%); }
+    .hero .btn { white-space: nowrap; }
+    .hero .btn { border-color: var(--pumpkin); }
+    .hero .btn.dark { background-color: var(--pumpkin); color: #111; }
+    .hero .btn:not(.dark) { background: transparent; color: var(--paper); }
+    .scroll-hint { margin-top: 34px; font-size: 11px; letter-spacing: 3px; color: #9a9a9a; animation: bob 1.6s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(6px); } }
+
+    /* jack-o-lantern eyes peeking from the dark */
+    .eyes { position: absolute; z-index: 4; display: flex; gap: 10px; animation: blink 6s infinite; }
+    .eyes i { width: 10px; height: 6px; background: var(--pumpkin); border-radius: 50%; box-shadow: 0 0 8px var(--pumpkin); }
+    .eyes.e1 { left: 8%; bottom: 22%; }
+    .eyes.e2 { right: 12%; bottom: 34%; animation-delay: 2.3s; }
+    .eyes.e3 { right: 30%; top: 30%; animation-delay: 4.1s; transform: scale(0.7); }
+    @keyframes blink { 0%, 44%, 50%, 100% { opacity: 1; } 46%, 48% { opacity: 0; } 70%, 90% { opacity: 0; } }
+
+    /* =====================================================
+       TRICK OR TREAT MACHINE: tap to print a spooky fortune
+       ===================================================== */
+    .tot { text-align: center; }
+    .tot-machine {
+        max-width: 360px;
+        margin: 18px auto 0;
+        background: linear-gradient(#2e2e2e, #0c0c0c);
+        border-radius: 14px;
+        padding: 18px 18px 26px;
+        color: #c9c9c9;
+        box-shadow: 0 8px 0 #000;
+        position: relative;
+    }
+    .tot-screen { font-family: var(--display); font-size: 22px; letter-spacing: 2px; color: var(--pumpkin); text-shadow: 0 0 8px rgba(255, 122, 26, 0.7); min-height: 28px; }
+    .tot-btn {
+        margin-top: 12px;
+        width: 92px; height: 92px; border-radius: 50%;
+        border: 4px solid #000;
+        background: radial-gradient(circle at 35% 30%, #ffb070, var(--pumpkin) 45%, #b84a00);
+        font-size: 40px; line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #6b2b00, 0 0 24px rgba(255, 122, 26, 0.6);
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .tot-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 #6b2b00, 0 0 24px rgba(255, 122, 26, 0.6); }
+    .tot-btn:focus-visible { outline: 3px solid var(--paper); outline-offset: 4px; }
+    .tot-slot { margin: 16px auto 0; height: 8px; background: #000; border-radius: 4px; box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.9); }
+    .tot-out { max-width: 300px; margin: -4px auto 0; min-height: 10px; }
+    .tot-receipt {
+        background: var(--paper);
+        border: 1px solid #ddd;
+        padding: 14px 16px 18px;
+        text-align: left;
+        font-size: 13px;
+        animation: tot-print 1s steps(12, end) both;
+        position: relative;
+    }
+    .tot-receipt::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+        background: conic-gradient(from -45deg at 50% 100%, var(--paper) 90deg, transparent 0) 0 0 / 16px 8px repeat-x;
+    }
+    .tot-receipt .verdict { font-family: var(--display); font-size: 40px; line-height: 1; text-align: center; margin: 4px 0; }
+    .tot-receipt .verdict.treat { color: var(--pumpkin); }
+    .tot-receipt p { margin: 8px 0 0; }
+    .tot-receipt a { color: var(--ink); font-weight: 700; }
+    @keyframes tot-print { from { clip-path: inset(0 0 100% 0); transform: translateY(-16px); } to { clip-path: inset(0 0 -10px 0); transform: none; } }
+
+    /* orange accents on the receipt */
+    .main h2 { position: relative; }
+    .main h2::after { content: ""; display: block; width: 60px; height: 3px; margin: 6px auto 0; background: var(--pumpkin); }
+    .rate-tag { background-color: var(--pumpkin) !important; color: #111 !important; }
+    .rate-card.premium { border-color: var(--ink); box-shadow: 6px 6px 0 var(--pumpkin); }
+    .step-num { color: var(--pumpkin); }
+
+    /* layout frames: dark spooky photos instead of plain gray */
+    .frame {
+        background: radial-gradient(circle at 50% 40%, #3a2a1a, #0d0d0d 75%) !important;
+        filter: none !important;
+        font-size: 30px;
+        text-shadow: 0 0 12px rgba(255, 122, 26, 0.8);
+    }
+
+    /* ===== PHONES ===== */
+    @media (max-width: 760px) {
+        .hero { min-height: 88vh; padding: 80px 16px 60px; }
+        .web { width: 110px; height: 110px; }
+        .spider { left: 8%; }
+        .eyes.e1, .eyes.e2 { display: none; }
+        .eyes.e3 { top: 16%; right: 10%; }
+        .hero .btn { white-space: normal; }
+        .wrap { padding: 28px 14px 100px; }
+        .main { padding: 30px 20px 36px; }
+        .printer { margin: 0 -6px; height: 52px; font-size: 16px; letter-spacing: 2px; }
+        h1 { font-size: 54px; }
+        h2 { font-size: 32px; }
+        .btn-row { grid-template-columns: 1fr; }
+        .strips { grid-template-columns: 1fr 1fr; }
+        .rate-cards { grid-template-columns: 1fr; gap: 30px; }
+        .rate-price { font-size: 56px; }
+        .step { grid-template-columns: 48px 1fr; }
+        .step-num { font-size: 48px; }
+        .float-book { font-size: 20px; padding: 6px 14px; right: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .main, .printer-led, .spooky-title, .spider, .fog, .eyes, .scroll-hint, .tot-receipt { animation: none !important; }
+        .strip { transition: none; }
+        .bats { display: none; }
+    }
+    </style>
+</head>
+
+<body>
+
+<div class="bats" id="bats" aria-hidden="true"></div>
+
+<!-- ===== SPOOKY HERO ===== -->
+<header class="hero" id="hero">
+    <svg class="web left" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#fdfcf7" stroke-width="0.6"><path d="M0 0 L100 0 M0 0 L95 40 M0 0 L70 75 M0 0 L35 95 M0 0 L0 100"/><path d="M22 0 Q20 10 21 9 Q12 16 9 20 Q6 21 0 22"/><path d="M45 0 Q42 18 43 19 Q28 32 22 40 Q12 44 0 45"/><path d="M70 0 Q66 26 66 29 Q45 50 34 62 Q18 68 0 70"/><path d="M95 0 Q90 35 88 39 Q62 66 48 82 Q24 92 0 96"/></g></svg>
+    <svg class="web right" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#fdfcf7" stroke-width="0.6"><path d="M0 0 L100 0 M0 0 L95 40 M0 0 L70 75 M0 0 L35 95 M0 0 L0 100"/><path d="M22 0 Q20 10 21 9 Q12 16 9 20 Q6 21 0 22"/><path d="M45 0 Q42 18 43 19 Q28 32 22 40 Q12 44 0 45"/><path d="M70 0 Q66 26 66 29 Q45 50 34 62 Q18 68 0 70"/><path d="M95 0 Q90 35 88 39 Q62 66 48 82 Q24 92 0 96"/></g></svg>
+    <div class="spider" aria-hidden="true"><span class="thread"></span><span class="body">🕷️</span></div>
+    <div class="eyes e1" aria-hidden="true"><i></i><i></i></div>
+    <div class="eyes e2" aria-hidden="true"><i></i><i></i></div>
+    <div class="eyes e3" aria-hidden="true"><i></i><i></i></div>
+    <div class="fog f1" aria-hidden="true"></div>
+    <div class="fog f2" aria-hidden="true"></div>
+
+    <p class="kicker">KLX RECEIPT PHOTOBOOTH <span>*</span> HALLOWEEN 2026</p>
+    <h1 class="spooky-title"><span class="w">Trick or</span>Receipt!</h1>
+    <p class="lead">Bring KLX to your Halloween party. Unlimited sessions, spooky layouts, and photos printed like receipts your guests can take home. Scary good memories, no tricks.</p>
+    <div class="btn-row">
+        <a class="btn dark book-link" href="#">Boo-k your date</a>
+        <a class="btn" href="#tot">Trick or treat?</a>
+    </div>
+    <p class="scroll-hint">SCROLL IF YOU DARE ↓</p>
+</header>
+
+<div class="wrap">
+
+    <!-- ===== PRINTER ===== -->
+    <div class="printer">
+        <a class="printer-brand" href="https://klxphotobooth.space/"><span class="printer-led" aria-hidden="true"></span>KLX</a>
+        <span>Halloween mode</span>
+        <span class="printer-slot" aria-hidden="true"></span>
+    </div>
+
+    <!-- ===== RECEIPT ===== -->
+    <main class="main paper">
+
+        <div class="logo-head">KLX</div>
+        <div class="small center">RECEIPT PHOTOBOOTH · ILIGAN CITY</div>
+        <div class="rc-meta" aria-hidden="true">
+            <span>DATE <b>OCT 31</b></span>
+            <span>TIME <b>MIDNIGHT</b></span>
+            <span>ORDER <b>KLX-BOO</b></span>
+        </div>
+        <hr class="dash">
+
+        <!-- PROMO COUNTDOWN (change the date in the script: search PROMO_END) -->
+        <div class="promo-strip" id="promoStrip" hidden>
+            BER MONTH PROMO ENDS HALLOWEEN NIGHT <b id="promoTime"></b>
+        </div>
+
+        <div class="lines">
+            <div class="line"><span>COSTUMES</span><span class="leader"></span><span>x UNLIMITED</span></div>
+            <div class="line"><span>SCREAMS</span><span class="leader"></span><span>x UNLIMITED</span></div>
+            <div class="line"><span>PRINTS PER SESSION</span><span class="leader"></span><span>UP TO 6</span></div>
+            <div class="line"><span>GHOSTS</span><span class="leader"></span><span>FREE</span></div>
+            <div class="line total"><span>TOTAL</span><span class="leader"></span><span>BOO-TIFUL</span></div>
+        </div>
+
+        <hr class="dash">
+
+        <!-- ===== SPOOKY LAYOUTS ===== -->
+        <!-- Swap the emoji frames for screenshots of your real Halloween layouts later -->
+        <h2>Spooky Layouts</h2>
+        <p class="small center">4 LAYOUTS CUSTOMIZED FOR YOUR PARTY. GUESTS PICK THEIR FAVE.</p>
+
+        <div class="strips">
+            <figure class="strip" style="margin:0;">
+                <div class="frame">👻</div><div class="frame">🦇</div><div class="frame">👻</div>
+                <div class="strip-name">Ghosted</div>
+            </figure>
+            <figure class="strip" style="margin:0;">
+                <div class="frame">🎃</div><div class="frame">🕯️</div><div class="frame">🎃</div>
+                <div class="strip-name">Pumpkin Patch</div>
+            </figure>
+            <figure class="strip" style="margin:0;">
+                <div class="frame">🧛</div><div class="frame">🩸</div><div class="frame">🧟</div>
+                <div class="strip-name">Night of Horror</div>
+            </figure>
+            <figure class="strip" style="margin:0;">
+                <div class="frame">🕸️</div><div class="frame">🎭</div><div class="frame">🕷️</div>
+                <div class="strip-name">Costume Party</div>
+            </figure>
+        </div>
+
+        <hr class="dash">
+
+        <!-- ===== TRICK OR TREAT MACHINE (edit the messages in the script: search FORTUNES) ===== -->
+        <section class="tot" id="tot">
+            <h2>Trick or Treat?</h2>
+            <p class="small center">TAP THE PUMPKIN TO PRINT YOUR SPOOKY FORTUNE</p>
+            <div class="tot-machine">
+                <div class="tot-screen" id="totScreen">READY TO SCARE</div>
+                <button type="button" class="tot-btn" id="totBtn" aria-label="Print a trick or treat fortune">🎃</button>
+                <div class="tot-slot"></div>
+            </div>
+            <div class="tot-out" id="totOut" aria-live="polite"></div>
+        </section>
+
+        <hr class="dash">
+
+        <!-- ===== RATES (same as main site, edit here if prices change) ===== -->
+        <section id="rates">
+            <h2>Rates</h2>
+            <p class="small center">THE ONLY BILL THAT WON'T SCARE YOU</p>
+
+            <div class="rate-cards">
+                <div class="rate-card">
+                    <h2>Classic</h2>
+                    <div class="rate-price">&#8369;2,699</div>
+                    <p class="small rate-sub">WITH ATTENDANT</p>
+                    <p class="rate-alt">Self-serve option: <b>&#8369;2,299</b></p>
+                    <div class="rate-row"><span class="rate-label">Guest count</span>Up to 150 pax</div>
+                    <div class="rate-row"><span class="rate-label">Duration</span>Whole event, up to 5 hrs + prep time</div>
+                    <div class="rate-row"><span class="rate-label">Paper</span>Standard thermal paper</div>
+                    <div class="rate-row"><span class="rate-label">Keepsake</span>Brown envelope, free &amp; unlimited</div>
+                    <div class="rate-row"><span class="rate-label">Staffing</span>1 attendant</div>
+                    <a class="btn book-link" href="#">Book Classic</a>
+                </div>
+
+                <div class="rate-card premium">
+                    <span class="rate-tag">BEST VALUE</span>
+                    <h2>Premium</h2>
+                    <div class="rate-price">&#8369;5,999</div>
+                    <p class="small rate-sub">WITH 2 ATTENDANTS</p>
+                    <p class="rate-alt">&nbsp;</p>
+                    <div class="rate-row"><span class="rate-label">Guest count</span>Up to 200 pax</div>
+                    <div class="rate-row"><span class="rate-label">Duration</span>Whole event, up to 5 hrs + prep time</div>
+                    <div class="rate-row"><span class="rate-label">Paper</span>Sticker paper (high quality, waterproof)</div>
+                    <div class="rate-row"><span class="rate-label">Magnetic print</span>30 pcs included</div>
+                    <div class="rate-row"><span class="rate-label">Staffing</span>2 attendants</div>
+                    <a class="btn dark book-link" href="#">Book Premium</a>
+                </div>
+            </div>
+
+            <p class="rate-dp">BOTH INCLUDE: UNLIMITED SESSIONS, 4 CUSTOM LAYOUTS, FREE PROPS, PENS, STICKERS, STAMPS &amp; HANGING DISPLAY</p>
+
+            <hr class="dash">
+
+            <div class="lines">
+                <p class="small center" style="margin-top:0;">ADD-ONS</p>
+                <div class="line"><span>Additional hour (Classic)</span><span class="leader"></span><span>&#8369;700</span></div>
+                <div class="line"><span>Additional hour (Premium)</span><span class="leader"></span><span>&#8369;1,000</span></div>
+                <div class="line"><span>Magnetic photo print (50 pcs)</span><span class="leader"></span><span>&#8369;3,000</span></div>
+                <div class="line"><span>Guestbook</span><span class="leader"></span><span>&#8369;500</span></div>
+                <div class="line"><span>Transport outside Iligan City</span><span class="leader"></span><span>ASK US</span></div>
+            </div>
+        </section>
+
+        <hr class="dash">
+
+        <!-- ===== HOW TO BOOK ===== -->
+        <h2>How to Boo-k</h2>
+        <p class="small center">EASY AS 1, 2, 3, BOO</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div><p class="step-title">Pick your date</p><p>Check our calendar for open dates and fill out the booking form.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div><p class="step-title">Pay the 50% DP</p><p>Scan our QR code and upload your proof of payment to lock in your slot.</p></div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div><p class="step-title">Get spooky</p><p>We set up, your guests strike their scariest pose, and everyone takes home a print.</p></div>
+            </div>
+        </div>
+
+        <hr class="dash">
+
+        <!-- ===== FAQ ===== -->
+        <h2>FAQ</h2>
+        <div class="faq">
+            <details><summary>Can the layouts match our Halloween theme?</summary><p>Yes. Every layout is customized. Put your theme and celebrant's name in the booking form and send us photos on Messenger.</p></details>
+            <details><summary>What do you need at the venue?</summary><p>Just a small space for the booth and access to a power outlet.</p></details>
+            <details><summary>Do guests get a soft copy?</summary><p>Yes. Right after printing, guests scan a QR code to download their digital copy.</p></details>
+            <details><summary>Do you go outside Iligan City?</summary><p>Yes. The transport fee depends on the venue, and we confirm it with you first.</p></details>
+            <details><summary>Our party is this weekend. Is it too late?</summary><p>Not always! Check the calendar for open dates or message us on Messenger and we'll let you know right away.</p></details>
+        </div>
+
+        <hr class="dash">
+
+        <!-- ===== FINAL CTA ===== -->
+        <h2>Don't get ghosted</h2>
+        <p class="small center">LIMITED SLOTS ONLY. 50% DP TO SECURE YOUR DATE.</p>
+        <div class="btn-row">
+            <a class="btn dark book-link" href="#">Boo-k your date</a>
+            <a class="btn" href="https://m.me/KLXreceiptPhotobooth" target="_blank" rel="noopener">Messenger</a>
+        </div>
+
+        <hr class="dash">
+
+        <div class="lines contact">
+            <div class="line"><span>SMART / TNT</span><span class="leader"></span><a href="tel:09472257991">0947 225 7991</a></div>
+            <div class="line"><span>TM / GLOBE</span><span class="leader"></span><a href="tel:09351265931">0935 126 5931</a></div>
+            <div class="line"><span>FACEBOOK</span><span class="leader"></span><a href="https://www.facebook.com/KLXreceiptPhotobooth" target="_blank" rel="noopener">KLXreceiptPhotobooth</a></div>
+            <div class="line"><span>IG / TIKTOK</span><span class="leader"></span><a href="https://www.instagram.com/klxiligan/" target="_blank" rel="noopener">@klxiligan</a></div>
+        </div>
+
+        <hr class="dash">
+        <div class="barcode"></div>
+        <p class="small center" style="margin:0;">THANK YOU FOR CHOOSING KLX</p>
+        <p class="small center" style="margin:4px 0 0;"><a href="https://klxphotobooth.space/" style="color:inherit;">VISIT KLXPHOTOBOOTH.SPACE</a></p>
+    </main>
+</div>
+
+<a class="float-book book-link" href="#">Boo-k now</a>
+
+<script>
+    // ===== YOUR BOOKING PAGE =====
+    // Opens the Book Now page on the main KLX site. Change it here and every button updates.
+    var BOOKING_URL = "https://klxphotobooth.space/#availability";
+
+    document.querySelectorAll(".book-link").forEach(function (a) {
+        a.href = BOOKING_URL;
+    });
+
+    // ===== PROMO COUNTDOWN =====
+    // Same end date as the main site. To hide the strip, set PROMO_END = "";
+    var PROMO_END = "2026-10-31T23:59:59+08:00";
+    var strip = document.getElementById("promoStrip");
+    var timeBox = document.getElementById("promoTime");
+
+    function tick() {
+        var left = PROMO_END ? new Date(PROMO_END) - new Date() : 0;
+        if (left <= 0) { strip.hidden = true; return; }
+        var d = Math.floor(left / 86400000);
+        var h = Math.floor(left / 3600000) % 24;
+        var m = Math.floor(left / 60000) % 60;
+        var s = Math.floor(left / 1000) % 60;
+        timeBox.textContent = d + "D " + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+        strip.hidden = false;
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // ===== FLASHLIGHT IN THE HERO =====
+    var hero = document.getElementById("hero");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function light(x, y) {
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty("--lx", (x - r.left) + "px");
+        hero.style.setProperty("--ly", (y - r.top) + "px");
+    }
+    hero.addEventListener("pointermove", function (e) { light(e.clientX, e.clientY); });
+    hero.addEventListener("touchmove", function (e) { light(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    // on phones (no mouse), the light wanders around by itself
+    if (!reduce && !window.matchMedia("(hover: hover)").matches) {
+        var t = 0;
+        setInterval(function () {
+            t += 0.03;
+            var r = hero.getBoundingClientRect();
+            hero.style.setProperty("--lx", (r.width * (0.5 + 0.32 * Math.sin(t))) + "px");
+            hero.style.setProperty("--ly", (r.height * (0.45 + 0.18 * Math.sin(t * 1.7))) + "px");
+        }, 40);
+    }
+
+    // ===== TRICK OR TREAT FORTUNES =====
+    // Add, remove or edit messages here. type: "treat" or "trick".
+    var FORTUNES = [
+        { type: "treat", text: "Your Halloween party will be legendary. Lock in your date before someone else does." },
+        { type: "treat", text: "Unlimited sessions means unlimited chances to get your best spooky pose." },
+        { type: "treat", text: "Every guest goes home with a print. No ghost leaves empty-handed." },
+        { type: "treat", text: "4 spooky layouts, customized for your party. Your guests pick their fave." },
+        { type: "trick", text: "Your barkada will photobomb every single shot. You'll love it anyway." },
+        { type: "trick", text: "Someone will come as a ghost and still show up in the photo." },
+        { type: "trick", text: "Your costume will look 10x scarier in black and white." },
+        { type: "trick", text: "The Ber Month Promo vanishes at midnight on Halloween. Spooky, right?" }
+    ];
+    var last = -1;
+    document.getElementById("totBtn").addEventListener("click", function () {
+        var i;
+        do { i = Math.floor(Math.random() * FORTUNES.length); } while (i === last && FORTUNES.length > 1);
+        last = i;
+        var f = FORTUNES[i];
+        var screen = document.getElementById("totScreen");
+        var out = document.getElementById("totOut");
+        screen.textContent = "PRINTING...";
+        out.innerHTML = "";
+        setTimeout(function () {
+            screen.textContent = f.type === "treat" ? "IT'S A TREAT!" : "IT'S A TRICK!";
+            var r = document.createElement("div");
+            r.className = "tot-receipt";
+            var now = new Date();
+            r.innerHTML =
+                '<div class="line"><span>KLX FORTUNE</span><span class="leader"></span><span>#' + (100 + i) + '</span></div>' +
+                '<div class="line"><span>TIME</span><span class="leader"></span><span>' + now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + '</span></div>' +
+                '<hr class="dash" style="margin:10px 0;">' +
+                '<div class="verdict ' + f.type + '">' + (f.type === "treat" ? "TREAT!" : "TRICK!") + '</div>' +
+                '<p></p>' +
+                '<hr class="dash" style="margin:10px 0;">' +
+                '<p class="center"><a class="book-link" href="' + BOOKING_URL + '">BOO-K YOUR DATE &rarr;</a></p>';
+            r.querySelector("p").textContent = f.text;
+            out.appendChild(r);
+        }, reduce ? 0 : 500);
+    });
+
+    // ===== BATS FLYING IN THE BACKGROUND =====
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var box = document.getElementById("bats");
+        var count = window.innerWidth < 760 ? 4 : 8;
+        for (var i = 0; i < count; i++) {
+            var bat = document.createElement("span");
+            bat.className = "bat";
+            bat.textContent = "🦇";
+            bat.style.top = (5 + Math.random() * 80) + "%";
+            bat.style.fontSize = (18 + Math.random() * 22) + "px";
+            bat.style.animationDuration = (14 + Math.random() * 14) + "s";
+            bat.style.animationDelay = (-Math.random() * 28) + "s";
+            bat.style.filter = "grayscale(1) brightness(3) drop-shadow(0 0 6px rgba(255,122,26,0.8))";
+            box.appendChild(bat);
+        }
+    }
+</script>
+</body>
+</html>
