@@ -310,6 +310,18 @@
     }
     .float-book:hover { opacity: 0.85; }
 
+    /* ===== "TAP ANYWHERE" HINT (hides once the music starts) ===== */
+    .sound-hint {
+        margin: 26px 0 0;
+        font-size: 12px;
+        letter-spacing: 3px;
+        color: var(--pumpkin);
+        text-shadow: 0 0 8px rgba(255, 122, 26, 0.7);
+        animation: flicker 3s infinite;
+    }
+    .sound-hint[hidden] { display: none; }
+
+
     /* ===== FLOATING BATS IN THE BACKGROUND ===== */
     .bats { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
     .bat {
@@ -520,9 +532,10 @@
     <h1 class="spooky-title"><span class="w">Trick or</span>Receipt!</h1>
     <p class="lead">Bring KLX to your Halloween party. Unlimited sessions, spooky layouts, and photos printed like receipts your guests can take home. Scary good memories, no tricks.</p>
     <div class="btn-row">
-        <a class="btn dark book-link" href="#">Boo-k your date</a>
+        <a class="btn dark book-link" href="#">Book your date</a>
         <a class="btn" href="#tot">Trick or treat?</a>
     </div>
+    <p class="sound-hint" id="soundHint">🔊 TAP ANYWHERE IF YOU DARE</p>
     <p class="scroll-hint">SCROLL IF YOU DARE ↓</p>
 </header>
 
@@ -653,7 +666,7 @@
         <hr class="dash">
 
         <!-- ===== HOW TO BOOK ===== -->
-        <h2>How to Boo-k</h2>
+        <h2>How to Book</h2>
         <p class="small center">EASY AS 1, 2, 3, BOO</p>
         <div class="steps">
             <div class="step">
@@ -688,7 +701,7 @@
         <h2>Don't get ghosted</h2>
         <p class="small center">LIMITED SLOTS ONLY. 50% DP TO SECURE YOUR DATE.</p>
         <div class="btn-row">
-            <a class="btn dark book-link" href="#">Boo-k your date</a>
+            <a class="btn dark book-link" href="#">Book your date</a>
             <a class="btn" href="https://m.me/KLXreceiptPhotobooth" target="_blank" rel="noopener">Messenger</a>
         </div>
 
@@ -708,7 +721,7 @@
     </main>
 </div>
 
-<a class="float-book book-link" href="#">Boo-k now</a>
+<a class="float-book book-link" href="#">Book now</a>
 
 <script>
     // ===== YOUR BOOKING PAGE =====
@@ -737,6 +750,204 @@
     }
     tick();
     setInterval(tick, 1000);
+
+    // ===== SPOOKY SOUNDS =====
+    // Suspense music made by the browser (no audio files needed).
+    // It tries to play as soon as the page opens. Most phones and browsers block sound
+    // until the visitor touches the screen, so in that case it starts on their first tap.
+    var Spooky = (function () {
+        var ctx = null, master = null, musicBus = null, on = true, playing = false;
+        var timer = null, nextTime = 0, step = 0, sustained = [];
+        var BPM = 96, STEP = 60 / BPM / 2;   // 8th notes
+
+        function setup() {
+            if (ctx) return;
+            var AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return;
+            ctx = new AC();
+            master = ctx.createGain();
+            master.gain.value = 0;
+            master.connect(ctx.destination);
+            musicBus = ctx.createGain();
+            musicBus.gain.value = 1;
+            musicBus.connect(master);
+        }
+
+        function fadeTo(v, secs) {
+            var t = ctx.currentTime;
+            master.gain.cancelScheduledValues(t);
+            master.gain.setValueAtTime(master.gain.value, t);
+            master.gain.linearRampToValueAtTime(v, t + secs);
+        }
+
+        // ---------- instruments ----------
+        function tone(freq, when, dur, type, vol, dest, cutoff) {
+            var o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+            o.type = type; o.frequency.value = freq;
+            f.type = "lowpass"; f.frequency.value = cutoff || 2000;
+            g.gain.setValueAtTime(0.0001, when);
+            g.gain.exponentialRampToValueAtTime(vol, when + 0.01);
+            g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+            o.connect(f); f.connect(g); g.connect(dest || musicBus);
+            o.start(when); o.stop(when + dur + 0.05);
+        }
+
+        // heartbeat: "lub-dub" low thump
+        function heartbeat(when, vol) {
+            [0, 0.22].forEach(function (off, i) {
+                var o = ctx.createOscillator(), g = ctx.createGain(), t = when + off;
+                o.type = "sine";
+                o.frequency.setValueAtTime(i ? 52 : 60, t);
+                o.frequency.exponentialRampToValueAtTime(32, t + 0.18);
+                g.gain.setValueAtTime(0.0001, t);
+                g.gain.exponentialRampToValueAtTime(vol * (i ? 0.7 : 1), t + 0.015);
+                g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+                o.connect(g); g.connect(musicBus); o.start(t); o.stop(t + 0.35);
+            });
+        }
+
+        // clock tick
+        function tick(when, vol) {
+            var len = Math.floor(ctx.sampleRate * 0.03), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+            for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+            var src = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
+            src.buffer = buf; hp.type = "highpass"; hp.frequency.value = 3500;
+            g.gain.value = vol;
+            src.connect(hp); hp.connect(g); g.connect(musicBus); src.start(when);
+        }
+
+        // eerie high strings that hang in the air (out-of-tune minor chord)
+        function startPad() {
+            var t = ctx.currentTime;
+            [440, 523.3, 622.3, 659.3 * 1.004].forEach(function (f) {
+                var o = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+                var trem = ctx.createOscillator(), tg = ctx.createGain();
+                o.type = "sawtooth"; o.frequency.value = f;
+                lp.type = "lowpass"; lp.frequency.value = 1400;
+                g.gain.value = 0.006;
+                trem.frequency.value = 7 + Math.random() * 2; tg.gain.value = 0.004;
+                trem.connect(tg); tg.connect(g.gain);
+                o.connect(lp); lp.connect(g); g.connect(musicBus);
+                o.start(t); trem.start(t);
+                sustained.push(o, trem);
+            });
+            // deep rumble underneath
+            var r = ctx.createOscillator(), rg = ctx.createGain();
+            r.type = "triangle"; r.frequency.value = 41.2; rg.gain.value = 0.07;
+            r.connect(rg); rg.connect(musicBus); r.start(t);
+            sustained.push(r);
+        }
+
+        // sudden scary hit
+        function stinger(when) {
+            [110, 116.5, 155.6, 233.1].forEach(function (f) {
+                tone(f, when, 2.2, "sawtooth", 0.05, musicBus, 1800);
+            });
+        }
+
+        // ---------- the suspense pattern (16 bars that slowly build, then repeat) ----------
+        // Classic horror "two-note" creep: E and F, getting faster and louder.
+        function scheduleStep(i, when) {
+            var bar = Math.floor(i / 8) % 16;           // which bar we're in
+            var beat = i % 8;                           // which 8th note in the bar
+            var build = bar / 15;                       // 0 = calm, 1 = most intense
+
+            if (beat === 0 || beat === 4) heartbeat(when, 0.35 + build * 0.35);
+            tick(when, beat % 2 === 0 ? 0.03 : 0.015);
+
+            // creeping two notes: slow at first, every 8th note near the end
+            var every = bar < 6 ? 4 : bar < 12 ? 2 : 1;
+            if (beat % every === 0) {
+                var note = (Math.floor(i / every) % 2 === 0) ? 82.4 : 87.3; // E2, F2
+                tone(note, when, STEP * every * 0.9, "sawtooth", 0.06 + build * 0.06, musicBus, 500 + build * 1200);
+                tone(note * 2, when, STEP * every * 0.9, "square", 0.012 + build * 0.02, musicBus, 900);
+            }
+
+            // high "violin stab" that appears in the second half
+            if (bar >= 8 && beat === 6) tone(bar % 2 ? 987.8 : 932.3, when, 0.18, "sawtooth", 0.015, musicBus, 3000);
+
+            // big hit at the end of the build, then it calms down and starts again
+            if (bar === 15 && beat === 7) stinger(when + STEP);
+        }
+
+        function scheduler() {
+            while (nextTime < ctx.currentTime + 0.15) {
+                scheduleStep(step, nextTime);
+                nextTime += STEP;
+                step++;
+            }
+        }
+
+        function startMusic() {
+            if (playing || !ctx) return;
+            playing = true;
+            startPad();
+            nextTime = ctx.currentTime + 0.1;
+            step = 0;
+            timer = setInterval(scheduler, 25);
+            fadeTo(0.9, 2);
+        }
+
+        function stopMusic() {
+            if (!playing) return;
+            playing = false;
+            fadeTo(0, 0.5);
+            clearInterval(timer);
+            var old = sustained; sustained = [];
+            setTimeout(function () { old.forEach(function (n) { try { n.stop(); } catch (e) {} }); }, 600);
+        }
+
+        // try to play right away; if the browser says no, wait for the first touch
+        function tryStart() {
+            if (!on) return;
+            setup();
+            if (!ctx) return;
+            var p = ctx.resume ? ctx.resume() : null;
+            var go = function () { if (ctx.state === "running" && on) { startMusic(); hideHint(); } };
+            if (p && p.then) p.then(go); else go();
+        }
+
+        function hideHint() {
+            var h = document.getElementById("soundHint");
+            if (h) h.hidden = true;
+        }
+
+        // ---------- sound effects for the pumpkin ----------
+        function fx() { return on && ctx && ctx.state === "running"; }
+
+        return {
+            init: function () {
+                tryStart();
+                var unlock = function () {
+                    tryStart();
+                    if (ctx && ctx.state === "running") {
+                        ["pointerdown", "touchstart", "keydown", "click"].forEach(function (ev) {
+                            document.removeEventListener(ev, unlock, true);
+                        });
+                    }
+                };
+                ["pointerdown", "touchstart", "keydown", "click"].forEach(function (ev) {
+                    document.addEventListener(ev, unlock, true);
+                });
+            },
+            printer: function () {
+                if (!fx()) return;
+                var t = ctx.currentTime;
+                for (var i = 0; i < 8; i++) tone(180 + (i % 2) * 40, t + i * 0.055, 0.04, "square", 0.04, master);
+            },
+            treat: function () {
+                if (!fx()) return;
+                var t = ctx.currentTime;
+                [523, 659, 784, 1047].forEach(function (f, i) { tone(f, t + i * 0.11, 0.35, "triangle", 0.09, master); });
+            },
+            trick: function () {
+                if (!fx()) return;
+                stinger(ctx.currentTime);
+            }
+        };
+    })();
+
+    Spooky.init();
 
     // ===== FLASHLIGHT IN THE HERO =====
     var hero = document.getElementById("hero");
@@ -780,9 +991,11 @@
         var screen = document.getElementById("totScreen");
         var out = document.getElementById("totOut");
         screen.textContent = "PRINTING...";
+        Spooky.printer();
         out.innerHTML = "";
         setTimeout(function () {
             screen.textContent = f.type === "treat" ? "IT'S A TREAT!" : "IT'S A TRICK!";
+            if (f.type === "treat") { Spooky.treat(); } else { Spooky.trick(); }
             var r = document.createElement("div");
             r.className = "tot-receipt";
             var now = new Date();
@@ -793,7 +1006,7 @@
                 '<div class="verdict ' + f.type + '">' + (f.type === "treat" ? "TREAT!" : "TRICK!") + '</div>' +
                 '<p></p>' +
                 '<hr class="dash" style="margin:10px 0;">' +
-                '<p class="center"><a class="book-link" href="' + BOOKING_URL + '">BOO-K YOUR DATE &rarr;</a></p>';
+                '<p class="center"><a class="book-link" href="' + BOOKING_URL + '">BOOK YOUR DATE &rarr;</a></p>';
             r.querySelector("p").textContent = f.text;
             out.appendChild(r);
         }, reduce ? 0 : 500);
