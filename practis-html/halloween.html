@@ -313,7 +313,8 @@
     /* ===== "TAP ANYWHERE" HINT (hides once the music starts) ===== */
     .sound-hint {
         margin: 26px 0 0;
-        font-size: 12px;
+        font-size: 15px;
+        font-weight: 700;
         letter-spacing: 3px;
         color: var(--pumpkin);
         text-shadow: 0 0 8px rgba(255, 122, 26, 0.7);
@@ -535,7 +536,7 @@
         <a class="btn dark book-link" href="#">Book your date</a>
         <a class="btn" href="#tot">Trick or treat?</a>
     </div>
-    <p class="sound-hint" id="soundHint">🔊 TAP ANYWHERE IF YOU DARE</p>
+    <p class="sound-hint" id="soundHint">🔊 VOLUME UP, THEN TAP ANYWHERE IF YOU DARE</p>
     <p class="scroll-hint">SCROLL IF YOU DARE ↓</p>
 </header>
 
@@ -898,13 +899,48 @@
         }
 
         // try to play right away; if the browser says no, wait for the first touch
+        // iPhone fix: Web Audio is muted when the phone's silent switch is on.
+        // Telling Safari this is "playback" audio, and playing a silent <audio> loop,
+        // lets the music play like a video does.
+        var silentEl = null;
+        function iosPlaybackMode() {
+            try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+            try {
+                if (!silentEl) {
+                    // 0.1 second of silence as a tiny WAV file
+                    var rate = 8000, n = 800, b = new ArrayBuffer(44 + n), v = new DataView(b);
+                    var w = function (o, str) { for (var i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); };
+                    w(0, "RIFF"); v.setUint32(4, 36 + n, true); w(8, "WAVEfmt ");
+                    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+                    v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+                    w(36, "data"); v.setUint32(40, n, true);
+                    for (var i = 0; i < n; i++) v.setUint8(44 + i, 128);
+                    silentEl = document.createElement("audio");
+                    silentEl.src = URL.createObjectURL(new Blob([b], { type: "audio/wav" }));
+                    silentEl.loop = true;
+                    silentEl.setAttribute("playsinline", "");
+                    silentEl.setAttribute("x-webkit-airplay", "deny");
+                }
+                var pp = silentEl.play();
+                if (pp && pp.catch) pp.catch(function () {});
+            } catch (e) {}
+        }
+
         function tryStart() {
             if (!on) return;
+            iosPlaybackMode();
             setup();
             if (!ctx) return;
+            // a 1-sample silent sound helps older iPhones "wake up" audio
+            try {
+                var tiny = ctx.createBufferSource();
+                tiny.buffer = ctx.createBuffer(1, 1, 22050);
+                tiny.connect(ctx.destination);
+                tiny.start(0);
+            } catch (e) {}
             var p = ctx.resume ? ctx.resume() : null;
-            var go = function () { if (ctx.state === "running" && on) { startMusic(); hideHint(); } };
-            if (p && p.then) p.then(go); else go();
+            var go = function () { if (ctx.state === "running" && on) startMusic(); };
+            if (p && p.then) p.then(go, function () {}); else go();
         }
 
         function hideHint() {
@@ -918,16 +954,21 @@
         return {
             init: function () {
                 tryStart();
-                var unlock = function () {
+                // phones only allow sound after a real tap (touchend / click count as a tap)
+                var EVENTS = ["touchend", "pointerup", "click", "mousedown", "keydown", "touchstart", "pointerdown"];
+                var unlock = function (e) {
                     tryStart();
-                    if (ctx && ctx.state === "running") {
-                        ["pointerdown", "touchstart", "keydown", "click"].forEach(function (ev) {
-                            document.removeEventListener(ev, unlock, true);
-                        });
+                    // touchstart / pointerdown can be the start of a scroll, so only a real tap counts
+                    if (e && (e.type === "touchstart" || e.type === "pointerdown")) return;
+                    hideHint();
+                    if (ctx && ctx.state === "running" && silentEl && !silentEl.paused) {
+                        EVENTS.forEach(function (ev) { document.removeEventListener(ev, unlock, true); });
                     }
                 };
-                ["pointerdown", "touchstart", "keydown", "click"].forEach(function (ev) {
-                    document.addEventListener(ev, unlock, true);
+                EVENTS.forEach(function (ev) { document.addEventListener(ev, unlock, true); });
+                // if the visitor leaves the tab and comes back, wake the audio up again
+                document.addEventListener("visibilitychange", function () {
+                    if (!document.hidden && ctx && ctx.state !== "running") tryStart();
                 });
             },
             printer: function () {
