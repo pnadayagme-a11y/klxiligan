@@ -880,10 +880,96 @@
         .reveal { opacity: 1; transform: none; transition: none; }
         .sleigh, .spark { display: none; }
     }
+
+    /* ===== TAP TO OPEN INTRO (starts the music on phones) ===== */
+    .intro {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 24px;
+        text-align: center;
+        color: #fff;
+        cursor: pointer;
+        background:
+            radial-gradient(ellipse at 50% 30%, rgba(200, 16, 46, 0.55), transparent 65%),
+            radial-gradient(ellipse at 50% 110%, rgba(31, 111, 67, 0.55), transparent 60%),
+            #0d0d0d;
+        animation: intro-in 0.4s ease 0.25s both;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .intro.hide {
+        opacity: 0;
+        transform: scale(1.08);
+        pointer-events: none;
+    }
+
+    @keyframes intro-in { from { opacity: 0; } }
+
+    .intro-gift {
+        font-size: 96px;
+        line-height: 1;
+        animation: shake 1.6s ease-in-out infinite;
+    }
+
+    .intro-title {
+        font-family: var(--display);
+        font-size: 58px;
+        line-height: 1;
+        color: #ff5a73;
+        text-transform: uppercase;
+        text-shadow: 0 0 18px rgba(255, 90, 115, 0.6);
+    }
+
+    .intro-title span { color: #5fe08f; text-shadow: 0 0 18px rgba(95, 224, 143, 0.6); }
+
+    .intro-sub {
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: #e8e8e8;
+    }
+
+    .intro-btn {
+        margin-top: 14px;
+        font-family: var(--display);
+        font-size: 30px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        background-color: var(--red);
+        color: #fff;
+        border: 2px solid #fff;
+        outline: 2px solid var(--red);
+        padding: 8px 26px;
+        white-space: nowrap;
+        cursor: pointer;
+        animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @media (max-width: 640px) {
+        .intro-title { font-size: 46px; }
+        .intro-btn { font-size: 26px; padding: 8px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .intro, .intro-gift, .intro-btn { animation: none; }
+    }
     </style>
 </head>
 
 <body>
+
+<div class="intro" id="intro" role="dialog" aria-label="Open the KLX Christmas page">
+    <div class="intro-gift" aria-hidden="true">&#127873;</div>
+    <div class="intro-title">Malipayong <span>Pasko!</span></div>
+    <p class="intro-sub">A Christmas surprise from KLX</p>
+    <button type="button" class="intro-btn" id="introBtn">Tap to open &#127876;</button>
+</div>
 
 <canvas id="snow" aria-hidden="true"></canvas>
 
@@ -1488,22 +1574,59 @@
     })();
 
     // ===== AUTOPLAY =====
-    // Plays as soon as the page opens. Phones and some browsers block sound until
-    // the visitor's first tap, click or key press, so the music starts right then.
-    var gestureEvents = ["pointerdown", "touchstart", "keydown", "click"];
+    // Phones (and some computers) block sound until the visitor taps once.
+    // So the page opens with a "Tap to open" gift screen: that tap starts the music.
+    // If the browser already allows sound, the gift screen is skipped automatically.
 
-    function startOnGesture() {
-        music.start().then(function () {
-            gestureEvents.forEach(function (ev) { document.removeEventListener(ev, startOnGesture); });
-        }).catch(function () {});
+    // iPhone: let the music play even when the phone is on silent mode
+    var iosUnlock = null;
+    function unlockIOS() {
+        try {
+            if (navigator.audioSession) navigator.audioSession.type = "playback";
+        } catch (e) {}
+        if (iosUnlock) return;
+        // a silent looping sound switches older iPhones to "media playback" mode
+        var rate = 8000, n = rate / 2, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+        function str(o, t) { for (var i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); }
+        str(0, "RIFF"); v.setUint32(4, 36 + n, true); str(8, "WAVEfmt ");
+        v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+        v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true);
+        v.setUint16(34, 8, true); str(36, "data"); v.setUint32(40, n, true);
+        for (var i = 0; i < n; i++) v.setUint8(44 + i, 128);
+        iosUnlock = new Audio(URL.createObjectURL(new Blob([buf], { type: "audio/wav" })));
+        iosUnlock.loop = true;
+        iosUnlock.setAttribute("playsinline", "");
+        iosUnlock.play().catch(function () {});
     }
 
-    // listen for the first tap right away, in case the browser holds the sound back
+    var intro = document.getElementById("intro");
+    var gestureEvents = ["click", "touchend", "pointerup", "keydown"];
+
+    function closeIntro() {
+        if (!intro) return;
+        intro.classList.add("hide");
+        var el = intro;
+        intro = null;
+        setTimeout(function () { el.remove(); }, 600);
+    }
+
+    function startFromTap() {
+        unlockIOS();
+        music.start().then(function () {
+            gestureEvents.forEach(function (ev) { document.removeEventListener(ev, startFromTap); });
+        }).catch(function () {});
+        closeIntro();
+    }
+
     gestureEvents.forEach(function (ev) {
-        document.addEventListener(ev, startOnGesture, { passive: true });
+        document.addEventListener(ev, startFromTap, { passive: true });
     });
+
+    // try to play right away; if it works, skip the gift screen
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
     music.start().then(function () {
-        gestureEvents.forEach(function (ev) { document.removeEventListener(ev, startOnGesture); });
+        gestureEvents.forEach(function (ev) { document.removeEventListener(ev, startFromTap); });
+        closeIntro();
     }).catch(function () {});
 
     // resume the music when the visitor comes back to the tab
